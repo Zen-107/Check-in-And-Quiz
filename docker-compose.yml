@@ -16,6 +16,8 @@ services:
     volumes:
       # สร้าง Volume ถาวร ชื่อ mysql_data ข้อมูลจะไม่หายแม้ลบ container
       - mysql_data:/var/lib/mysql
+      # Mount init.sql เพื่อสร้างตารางอัตโนมัติตอนเริ่มต้น
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
     command: --default-authentication-plugin=mysql_native_password
     networks:
       - app_network

@@ -54,7 +54,7 @@ func ResultHandler(w http.ResponseWriter, r *http.Request) {
 // GetCheckInCountHandler returns the total number of check-ins
 func GetCheckInCountHandler(w http.ResponseWriter, r *http.Request) {
 	var count int
-	err := database.DB.QueryRow("SELECT COUNT(*) FROM checkins").Scan(&count)
+	err := database.DB.QueryRow("SELECT COUNT(*) FROM attendances").Scan(&count)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -84,7 +84,7 @@ func SubmitCheckInHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Insert into database
-	query := `INSERT INTO checkins (user_type, name, staff_id, faculty, position, occupation, checkin_time) 
+	query := `INSERT INTO attendances (full_name, user_type, student_id, faculty, position, occupation, check_in_time) 
 			  VALUES (?, ?, ?, ?, ?, ?, ?)`
 	
 	var lastInsertId int64
@@ -92,11 +92,11 @@ func SubmitCheckInHandler(w http.ResponseWriter, r *http.Request) {
 	var result sql.Result
 	switch req.UserType {
 	case "student":
-		result, execErr = database.DB.Exec(query, req.UserType, req.Name, req.StaffID, req.Faculty, "", "", time.Now())
+		result, execErr = database.DB.Exec(query, req.Name, req.UserType, req.StaffID, req.Faculty, "", "", time.Now())
 	case "staff":
-		result, execErr = database.DB.Exec(query, req.UserType, req.Name, req.StaffID, req.Faculty, req.Position, "", time.Now())
+		result, execErr = database.DB.Exec(query, req.Name, req.UserType, req.StaffID, req.Faculty, req.Position, "", time.Now())
 	case "external":
-		result, execErr = database.DB.Exec(query, req.UserType, req.Name, "", "", "", req.Occupation, time.Now())
+		result, execErr = database.DB.Exec(query, req.Name, req.UserType, "", "", "", req.Occupation, time.Now())
 	default:
 		http.Error(w, "Invalid user type", http.StatusBadRequest)
 		return
@@ -136,8 +136,8 @@ func SubmitQuizHandler(w http.ResponseWriter, r *http.Request) {
 
 	// Save to database
 	answersJSON, _ := json.Marshal(req.Answers)
-	query := `INSERT INTO quiz_results (name, answers, result_type, result_description) VALUES (?, ?, ?, ?)`
-	_, err := database.DB.Exec(query, req.Name, string(answersJSON), resultType, personality.Description)
+	query := `INSERT INTO quiz_results (full_name, user_type, student_id, faculty, position, occupation, answers, result_type, result_description) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`
+	_, err := database.DB.Exec(query, req.Name, req.UserType, req.StaffID, req.Faculty, req.Position, req.Occupation, string(answersJSON), resultType, personality.Description)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
