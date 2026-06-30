@@ -101,8 +101,27 @@ cd /workspace
 go mod tidy
 ```
 
-### 2. ตั้งค่า Database
-สร้าง Database ใน MySQL:
+### 2. ตั้งค่า Database ด้วย Docker (พร้อม Volume ถาวร)
+
+สร้างและรัน MySQL Container พร้อม Volume สำหรับเก็บข้อมูลถาวร:
+
+```bash
+# รัน MySQL ใน Docker (ข้อมูลจะถูกเก็บใน Volume ชื่อ mysql_data)
+docker-compose up -d
+
+# ตรวจสอบสถานะ
+docker-compose ps
+
+# ดู logs (ถ้าต้องการ)
+docker-compose logs -f db
+```
+
+> 💡 **ข้อดีของ Docker Volume:**
+> - ข้อมูลจะไม่หายแม้ลบ container (`docker-compose down`)
+> - สามารถ backup/restore ได้ง่าย
+> - แยก environment ระหว่าง development และ production
+
+**หมายเหตุ:** หากต้องการตั้งค่า Database ด้วยตนเอง (ไม่ใช้ Docker):
 ```sql
 CREATE DATABASE checkin_quiz CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 ```
@@ -111,8 +130,8 @@ CREATE DATABASE checkin_quiz CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 ```bash
 export DB_HOST=localhost
 export DB_PORT=3306
-export DB_USER=root
-export DB_PASSWORD=your_password
+export DB_USER=quizuser
+export DB_PASSWORD=quizpassword
 export DB_NAME=checkin_quiz
 export PORT=8080
 ```
