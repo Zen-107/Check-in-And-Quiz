@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>เช็คชื่อเข้างาน - Check-In</title>
+    <link rel="stylesheet" href="/static/css/styles.css">
+</head>
+<body>
+    <!-- Animated Stars Background -->
+    <div class="stars-bg"></div>
+
+    <div class="container">
+        <!-- Navigation -->
+        <nav class="nav">
+            <a href="/" class="nav-link">หน้าแรก</a>
+            <a href="/checkin" class="nav-link active">เช็คชื่อ</a>
+            <a href="/quiz" class="nav-link">แบบทดสอบ</a>
+        </nav>
+
+        <!-- Page Header -->
+        <header class="page-header">
+            <h1 class="page-title">📝 เช็คชื่อเข้างาน</h1>
+            <p class="page-subtitle">บันทึกการเข้าร่วมของคุณและกลายเป็นส่วนหนึ่งของจักรวาลของเรา</p>
+        </header>
+
+        <!-- Check-in Form -->
+        <main class="glass-card" style="max-width: 600px; margin: 0 auto;">
+            <form onsubmit="submitCheckIn(event)">
+                <!-- User Type Selection -->
+                <div class="form-group">
+                    <label class="form-label" for="user-type">ประเภทผู้เข้าร่วม *</label>
+                    <select 
+                        class="form-select" 
+                        id="user-type" 
+                        name="user_type" 
+                        required
+                        onchange="toggleUserTypeFields()"
+                    >
+                        <option value="">-- เลือกประเภท --</option>
+                        <option value="student">นิสิต/นักศึกษา</option>
+                        <option value="staff">บุคลากร</option>
+                        <option value="external">บุคคลภายนอก</option>
+                    </select>
+                </div>
+
+                <!-- Common Fields -->
+                <div class="form-group">
+                    <label class="form-label" for="name">ชื่อ-นามสกุล *</label>
+                    <input 
+                        type="text" 
+                        class="form-input" 
+                        id="name" 
+                        name="name" 
+                        placeholder="กรอกชื่อและนามสกุลของคุณ"
+                        required
+                    />
+                </div>
+
+                <!-- Student Fields -->
+                <div id="student-fields" class="hidden">
+                    <div class="form-group">
+                        <label class="form-label" for="staff_id_student">รหัสนิสิต *</label>
+                        <input 
+                            type="text" 
+                            class="form-input" 
+                            id="staff_id_student" 
+                            name="staff_id" 
+                            placeholder="กรอกรหัสนิสิต"
+                        />
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="faculty_student">คณะ *</label>
+                        <input 
+                            type="text" 
+                            class="form-input" 
+                            id="faculty_student" 
+                            name="faculty" 
+                            placeholder="กรอกชื่อคณะ"
+                        />
+                    </div>
+                </div>
+
+                <!-- Staff Fields -->
+                <div id="staff-fields" class="hidden">
+                    <div class="form-group">
+                        <label class="form-label" for="staff_id_staff">รหัสพนักงาน</label>
+                        <input 
+                            type="text" 
+                            class="form-input" 
+                            id="staff_id_staff" 
+                            name="staff_id" 
+                            placeholder="กรอกรหัสพนักงาน (ถ้ามี)"
+                        />
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="position_staff">ตำแหน่ง *</label>
+                        <input 
+                            type="text" 
+                            class="form-input" 
+                            id="position_staff" 
+                            name="position" 
+                            placeholder="กรอกตำแหน่ง"
+                            required
+                        />
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="faculty_staff">คณะ/หน่วยงาน *</label>
+                        <input 
+                            type="text" 
+                            class="form-input" 
+                            id="faculty_staff" 
+                            name="faculty" 
+                            placeholder="กรอกคณะหรือหน่วยงาน"
+                            required
+                        />
+                    </div>
+                </div>
+
+                <!-- External Fields -->
+                <div id="external-fields" class="hidden">
+                    <div class="form-group">
+                        <label class="form-label" for="occupation_external">อาชีพ *</label>
+                        <input 
+                            type="text" 
+                            class="form-input" 
+                            id="occupation_external" 
+                            name="occupation" 
+                            placeholder="กรอกอาชีพของคุณ"
+                            required
+                        />
+                    </div>
+                </div>
+
+                <!-- Submit Button -->
+                <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 2rem;">
+                    ✨ เช็คอินเข้าสู่จักรวาล
+                </button>
+            </form>
+
+            <!-- Check-in Counter -->
+            <div class="mt-4" style="border-top: 1px solid rgba(255,255,255,0.2); padding-top: 2rem; text-align: center;">
+                <div class="counter-label">
+                    🌌 มีดวงดาวเข้าร่วมจักรวาลแล้ว
+                </div>
+                <div class="counter-display" id="checkin-count">
+                    0
+                </div>
+            </div>
+        </main>
+
+        <!-- QR Code Section (Optional) -->
+        <div class="glass-card mt-4" style="max-width: 600px; margin: 2rem auto; text-align: center;">
+            <h3 style="font-size: 1.5rem; margin-bottom: 1rem;">📱 หรือสแกน QR Code เพื่อเช็คอิน</h3>
+            <div style="background: white; padding: 2rem; border-radius: 15px; display: inline-block; margin: 1rem 0;">
+                <!-- Placeholder for QR Code -->
+                <div style="width: 200px; height: 200px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); display: flex; align-items: center; justify-content: center; border-radius: 10px; color: white; font-size: 3rem;">
+                    📍
+                </div>
+            </div>
+            <p style="color: rgba(255,255,255,0.7); font-size: 0.9rem;">
+                สแกนเพื่อเปิดหน้าเช็คชื่อนี้บนมือถือของคุณ
+            </p>
+        </div>
+    </div>
+
+    <script src="/static/js/app.js"></script>
+</body>
+</html>
