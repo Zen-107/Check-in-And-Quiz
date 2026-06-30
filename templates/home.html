@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Check-In & Quiz - จักรวาลดวงดาวของคุณ</title>
+    <link rel="stylesheet" href="/static/css/styles.css">
+</head>
+<body>
+    <!-- Animated Stars Background -->
+    <div class="stars-bg"></div>
+
+    <div class="container">
+        <!-- Navigation -->
+        <nav class="nav">
+            <a href="/" class="nav-link active">หน้าแรก</a>
+            <a href="/checkin" class="nav-link">เช็คชื่อ</a>
+            <a href="/quiz" class="nav-link">แบบทดสอบ</a>
+        </nav>
+
+        <!-- Page Header -->
+        <header class="page-header">
+            <h1 class="page-title">✨ ยินดีต้อนรับสู่จักรวาลดวงดาว ✨</h1>
+            <p class="page-subtitle">ค้นพบตัวตนของคุณผ่านดวงดาวและเข้าร่วมกับเราในจักรวาลอันกว้างใหญ่</p>
+        </header>
+
+        <!-- Main Content -->
+        <main class="glass-card">
+            <div class="text-center mb-4">
+                <h2 style="font-size: 2rem; margin-bottom: 1rem;">🌟 เลือกกิจกรรมที่คุณต้องการ</h2>
+                <p style="color: rgba(255,255,255,0.8); margin-bottom: 2rem;">
+                    เริ่มต้นการเดินทางของคุณในจักรวาลแห่งนี้
+                </p>
+
+                <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+                    <a href="/checkin" class="btn btn-primary">
+                        📝 เช็คชื่อเข้างาน
+                    </a>
+                    <a href="/quiz" class="btn btn-secondary">
+                        ⭐ แบบทดสอบบุคลิกภาพ
+                    </a>
+                </div>
+            </div>
+
+            <!-- Check-in Counter -->
+            <div class="mt-4" style="border-top: 1px solid rgba(255,255,255,0.2); padding-top: 2rem;">
+                <div class="counter-label">
+                    🌌 มีดวงดาวเข้าร่วมจักรวาลแล้ว
+                </div>
+                <div class="counter-display" id="checkin-count">
+                    0
+                </div>
+                <p style="text-align: center; color: rgba(255,255,255,0.6); font-size: 0.9rem;">
+                    อัพเดทแบบ Real-time
+                </p>
+            </div>
+        </main>
+
+        <!-- Features Section -->
+        <section class="mt-4" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem;">
+            <div class="glass-card" style="text-align: center;">
+                <div style="font-size: 3rem; margin-bottom: 1rem;">📍</div>
+                <h3 style="font-size: 1.5rem; margin-bottom: 1rem;">เช็คชื่อเข้างาน</h3>
+                <p style="color: rgba(255,255,255,0.8); line-height: 1.6;">
+                    บันทึกการเข้าร่วมของคุณและกลายเป็นส่วนหนึ่งของจักรวาลของเรา 
+                    ระบบจะนับจำนวนผู้เข้าร่วมแบบ Real-time
+                </p>
+            </div>
+
+            <div class="glass-card" style="text-align: center;">
+                <div style="font-size: 3rem; margin-bottom: 1rem;">🔮</div>
+                <h3 style="font-size: 1.5rem; margin-bottom: 1rem;">แบบทดสอบดวงดาว</h3>
+                <p style="color: rgba(255,255,255,0.8); line-height: 1.6;">
+                    ค้นหาดวงดาวประจำตัวของคุณผ่านแบบทดสอบบุคลิกภาพ 
+                    พร้อมผลลัพธ์ที่สวยงามเหมาะสำหรับการแชร์
+                </p>
+            </div>
+
+            <div class="glass-card" style="text-align: center;">
+                <div style="font-size: 3rem; margin-bottom: 1rem;">💫</div>
+                <h3 style="font-size: 1.5rem; margin-bottom: 1rem;">ธีมจักรวาล</h3>
+                <p style="color: rgba(255,255,255,0.8); line-height: 1.6;">
+                    สัมผัสประสบการณ์การใช้งานที่งดงามด้วยธีมดวงดาว 
+                    และเอฟเฟกต์ประกายวิ้งวับตลอดทั้งเว็บไซต์
+                </p>
+            </div>
+        </section>
+    </div>
+
+    <script src="/static/js/app.js"></script>
+</body>
+</html>
