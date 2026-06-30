@@ -50,6 +50,7 @@ async function updateCheckInCount() {
 document.addEventListener('DOMContentLoaded', () => {
     createStars();
     updateCheckInCount();
+    toggleUserTypeFields();
     
     // Update counter every 5 seconds
     setInterval(updateCheckInCount, 5000);
@@ -62,13 +63,17 @@ async function submitCheckIn(event) {
     const form = event.target;
     const submitBtn = form.querySelector('button[type="submit"]');
     const originalText = submitBtn.innerHTML;
+
+    const data = collectCheckInData(form);
+    const validationError = validateCheckInData(data);
+    if (validationError) {
+        showNotification(validationError, 'error');
+        return;
+    }
     
     // Show loading state
     submitBtn.disabled = true;
     submitBtn.innerHTML = '<span class="spinner"></span> กำลังบันทึก...';
-    
-    const formData = new FormData(form);
-    const data = Object.fromEntries(formData.entries());
     
     try {
         const response = await fetch('/api/checkin', {
@@ -79,14 +84,20 @@ async function submitCheckIn(event) {
             body: JSON.stringify(data),
         });
         
-        const result = await response.json();
+        let result = {};
+        try {
+            result = await response.json();
+        } catch (error) {
+            result = {};
+        }
         
         if (response.ok && result.success) {
             showNotification(result.message, 'success');
             form.reset();
+            toggleUserTypeFields();
             updateCheckInCount();
         } else {
-            showNotification(result.message || 'เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้ง', 'error');
+            showNotification(result.message || result.error || 'เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้ง', 'error');
         }
     } catch (error) {
         showNotification('เกิดข้อผิดพลาดในการเชื่อมต่อ กรุณาลองใหม่อีกครั้ง', 'error');
@@ -175,22 +186,81 @@ function selectOption(option) {
 function toggleUserTypeFields() {
     const userType = document.getElementById('user-type');
     if (!userType) return;
-    
-    const studentFields = document.getElementById('student-fields');
-    const staffFields = document.getElementById('staff-fields');
-    const externalFields = document.getElementById('external-fields');
-    
-    studentFields?.classList.add('hidden');
-    staffFields?.classList.add('hidden');
-    externalFields?.classList.add('hidden');
-    
-    if (userType.value === 'student') {
-        studentFields?.classList.remove('hidden');
-    } else if (userType.value === 'staff') {
-        staffFields?.classList.remove('hidden');
-    } else if (userType.value === 'external') {
-        externalFields?.classList.remove('hidden');
+
+    const sections = {
+        student: document.getElementById('student-fields'),
+        staff: document.getElementById('staff-fields'),
+        external: document.getElementById('external-fields'),
+    };
+
+    const requiredByType = {
+        student: ['staff_id_student', 'faculty_student'],
+        staff: ['position_staff', 'faculty_staff'],
+        external: ['occupation_external'],
+    };
+
+    Object.entries(sections).forEach(([type, section]) => {
+        if (!section) return;
+
+        const isActive = userType.value === type;
+        section.classList.toggle('hidden', !isActive);
+
+        section.querySelectorAll('input, select, textarea').forEach((input) => {
+            input.disabled = !isActive;
+            input.required = false;
+        });
+    });
+
+    (requiredByType[userType.value] || []).forEach((id) => {
+        const input = document.getElementById(id);
+        if (input) {
+            input.required = true;
+        }
+    });
+}
+
+function collectCheckInData(form) {
+    const userType = form.querySelector('[name="user_type"]').value;
+    const data = {
+        user_type: userType,
+        name: form.querySelector('[name="name"]').value.trim(),
+    };
+
+    if (userType === 'student') {
+        data.staff_id = form.querySelector('#staff_id_student').value.trim();
+        data.faculty = form.querySelector('#faculty_student').value.trim();
+    } else if (userType === 'staff') {
+        data.staff_id = form.querySelector('#staff_id_staff').value.trim();
+        data.position = form.querySelector('#position_staff').value.trim();
+        data.faculty = form.querySelector('#faculty_staff').value.trim();
+    } else if (userType === 'external') {
+        data.occupation = form.querySelector('#occupation_external').value.trim();
     }
+
+    return data;
+}
+
+function validateCheckInData(data) {
+    if (!data.user_type) {
+        return 'กรุณาเลือกประเภทผู้เข้าร่วม';
+    }
+    if (!data.name) {
+        return 'กรุณากรอกชื่อ-นามสกุล';
+    }
+
+    if (data.user_type === 'student') {
+        if (!data.staff_id) return 'กรุณากรอกรหัสนิสิต';
+        if (!data.faculty) return 'กรุณากรอกคณะ';
+    } else if (data.user_type === 'staff') {
+        if (!data.position) return 'กรุณากรอกตำแหน่ง';
+        if (!data.faculty) return 'กรุณากรอกคณะ/หน่วยงาน';
+    } else if (data.user_type === 'external') {
+        if (!data.occupation) return 'กรุณากรอกอาชีพ';
+    } else {
+        return 'ประเภทผู้เข้าร่วมไม่ถูกต้อง';
+    }
+
+    return null;
 }
 
 // Share result

@@ -317,24 +317,21 @@
 
         if (type === 'student') {
             fieldsHTML = `
-                <div class="animate-fade-in"><input type="text" placeholder="รหัสนิสิต (Student ID)" class="${inputClass}" required></div>
-                <div class="animate-fade-in"><input type="text" placeholder="ชื่อ-นามสกุล" class="${inputClass}" required></div>
-                <div class="animate-fade-in"><input type="email" placeholder="อีเมลสถาบัน" class="${inputClass}"></div>
-                <div class="animate-fade-in"><input type="text" placeholder="คณะ" class="${inputClass}"></div>
+                <div class="animate-fade-in"><input type="text" name="staff_id" placeholder="รหัสนิสิต (Student ID)" class="${inputClass}" required></div>
+                <div class="animate-fade-in"><input type="text" name="name" placeholder="ชื่อ-นามสกุล" class="${inputClass}" required></div>
+                <div class="animate-fade-in"><input type="text" name="faculty" placeholder="คณะ" class="${inputClass}" required></div>
             `;
         } else if (type === 'staff') {
             fieldsHTML = `
-                <div class="animate-fade-in"><input type="text" placeholder="ชื่อ-นามสกุล" class="${inputClass}" required></div>
-                <div class="animate-fade-in"><input type="email" placeholder="อีเมล" class="${inputClass}"></div>
-                <div class="animate-fade-in"><input type="text" placeholder="แผนก / ฝ่าย" class="${inputClass}"></div>
-                <div class="animate-fade-in"><input type="tel" placeholder="เบอร์โทรติดต่อ" class="${inputClass}"></div>
+                <div class="animate-fade-in"><input type="text" name="name" placeholder="ชื่อ-นามสกุล" class="${inputClass}" required></div>
+                <div class="animate-fade-in"><input type="text" name="staff_id" placeholder="รหัสพนักงาน (ถ้ามี)" class="${inputClass}"></div>
+                <div class="animate-fade-in"><input type="text" name="position" placeholder="ตำแหน่ง" class="${inputClass}" required></div>
+                <div class="animate-fade-in"><input type="text" name="faculty" placeholder="คณะ/หน่วยงาน" class="${inputClass}" required></div>
             `;
         } else { // external
             fieldsHTML = `
-                <div class="animate-fade-in"><input type="text" placeholder="ชื่อ-นามสกุล" class="${inputClass}" required></div>
-                <div class="animate-fade-in"><input type="email" placeholder="อีเมล" class="${inputClass}"></div>
-                <div class="animate-fade-in"><input type="text" placeholder="หน่วยงาน / องค์กร" class="${inputClass}"></div>
-                <div class="animate-fade-in"><input type="tel" placeholder="เบอร์โทรติดต่อ" class="${inputClass}"></div>
+                <div class="animate-fade-in"><input type="text" name="name" placeholder="ชื่อ-นามสกุล" class="${inputClass}" required></div>
+                <div class="animate-fade-in"><input type="text" name="occupation" placeholder="อาชีพ" class="${inputClass}" required></div>
             `;
         }
         formFields.innerHTML = fieldsHTML;
@@ -352,21 +349,43 @@
     });
 
     // --- 3. Form Submission & Sparkle Effect ---
-    document.getElementById('checkinForm').addEventListener('submit', function(e) {
+    document.getElementById('checkinForm').addEventListener('submit', async function(e) {
         e.preventDefault();
-        
-        // Hide modal
-        closeModalFunc();
 
-        // Trigger sparkle effect from center of screen
-        triggerSparkleEffect(window.innerWidth / 2, window.innerHeight / 2);
+        const submitBtn = this.querySelector('button[type="submit"]');
+        const originalText = submitBtn.textContent;
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'กำลังบันทึก...';
 
-        // Simulate processing and redirect
-        setTimeout(() => {
-            // In real app: window.location.href = 'quiz.html';
-            alert("บันทึกข้อมูลเรียบร้อย! เตรียมตัวพบกับดวงดาวของคุณ...");
-            console.log("Redirecting to quiz.html...");
-        }, 1500);
+        const formData = new FormData(this);
+        const payload = Object.fromEntries(formData.entries());
+        payload.user_type = typeSelect.value;
+
+        try {
+            const response = await fetch('/api/checkin', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload),
+            });
+
+            const result = await response.json();
+
+            if (response.ok && result.success) {
+                closeModalFunc();
+                triggerSparkleEffect(window.innerWidth / 2, window.innerHeight / 2);
+                updateLiveCounter();
+                alert(result.message || 'บันทึกข้อมูลเรียบร้อย!');
+                this.reset();
+                updateFormFields();
+            } else {
+                alert(result.message || 'เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้ง');
+            }
+        } catch (error) {
+            alert('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้ กรุณาเปิดผ่าน http://localhost:8080');
+        } finally {
+            submitBtn.disabled = false;
+            submitBtn.textContent = originalText;
+        }
     });
 
     function triggerSparkleEffect(x, y) {
@@ -399,28 +418,23 @@
         }
     }
 
-    // --- 4. Live Counter Simulation ---
+    // --- 4. Live Counter ---
     const counterEl = document.getElementById('counter-number');
-    let currentCount = 987;
-    
-    function incrementCounter() {
-        // Randomly increment every 2-5 seconds
-        const nextIncrement = Math.random() * 3000 + 2000;
-        
-        setTimeout(() => {
-            const increase = Math.floor(Math.random() * 3) + 1; // Increase by 1-3
-            currentCount += increase;
-            counterEl.textContent = currentCount.toLocaleString();
-            
-            // Add a little pulse effect
-            counterEl.classList.add('scale-110');
-            setTimeout(() => counterEl.classList.remove('scale-110'), 200);
-            
-            incrementCounter();
-        }, nextIncrement);
+
+    async function updateLiveCounter() {
+        try {
+            const response = await fetch('/api/checkin/count');
+            const data = await response.json();
+            if (counterEl && typeof data.count === 'number') {
+                counterEl.textContent = data.count.toLocaleString();
+            }
+        } catch (error) {
+            console.error('Error fetching check-in count:', error);
+        }
     }
-    
-    incrementCounter();
+
+    updateLiveCounter();
+    setInterval(updateLiveCounter, 5000);
 
 </script>
 

@@ -78,8 +78,33 @@ func SubmitCheckInHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Validate required fields
+	if req.UserType == "" {
+		writeJSONError(w, "กรุณาเลือกประเภทผู้เข้าร่วม", http.StatusBadRequest)
+		return
+	}
 	if req.Name == "" {
-		http.Error(w, "Name is required", http.StatusBadRequest)
+		writeJSONError(w, "กรุณากรอกชื่อ-นามสกุล", http.StatusBadRequest)
+		return
+	}
+
+	switch req.UserType {
+	case "student":
+		if req.StaffID == "" || req.Faculty == "" {
+			writeJSONError(w, "กรุณากรอกรหัสนิสิตและคณะ", http.StatusBadRequest)
+			return
+		}
+	case "staff":
+		if req.Position == "" || req.Faculty == "" {
+			writeJSONError(w, "กรุณากรอกตำแหน่งและคณะ/หน่วยงาน", http.StatusBadRequest)
+			return
+		}
+	case "external":
+		if req.Occupation == "" {
+			writeJSONError(w, "กรุณากรอกอาชีพ", http.StatusBadRequest)
+			return
+		}
+	default:
+		writeJSONError(w, "ประเภทผู้เข้าร่วมไม่ถูกต้อง", http.StatusBadRequest)
 		return
 	}
 
@@ -98,12 +123,12 @@ func SubmitCheckInHandler(w http.ResponseWriter, r *http.Request) {
 	case "external":
 		result, execErr = database.DB.Exec(query, req.Name, req.UserType, "", "", "", req.Occupation, time.Now())
 	default:
-		http.Error(w, "Invalid user type", http.StatusBadRequest)
+		writeJSONError(w, "ประเภทผู้เข้าร่วมไม่ถูกต้อง", http.StatusBadRequest)
 		return
 	}
 
 	if execErr != nil {
-		http.Error(w, execErr.Error(), http.StatusInternalServerError)
+		writeJSONError(w, "ไม่สามารถบันทึกข้อมูลได้ กรุณาลองใหม่อีกครั้ง", http.StatusInternalServerError)
 		return
 	}
 
@@ -134,12 +159,17 @@ func SubmitQuizHandler(w http.ResponseWriter, r *http.Request) {
 	resultType := calculateQuizResult(req.Answers)
 	personality := getPersonalityByType(resultType)
 
+	userType := req.UserType
+	if userType == "" {
+		userType = "external"
+	}
+
 	// Save to database
 	answersJSON, _ := json.Marshal(req.Answers)
 	query := `INSERT INTO quiz_results (full_name, user_type, student_id, faculty, position, occupation, answers, result_type, result_description) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`
-	_, err := database.DB.Exec(query, req.Name, req.UserType, req.StaffID, req.Faculty, req.Position, req.Occupation, string(answersJSON), resultType, personality.Description)
+	_, err := database.DB.Exec(query, req.Name, userType, req.StaffID, req.Faculty, req.Position, req.Occupation, string(answersJSON), resultType, personality.Description)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		writeJSONError(w, "ไม่สามารถบันทึกผลแบบทดสอบได้ กรุณาลองใหม่อีกครั้ง", http.StatusInternalServerError)
 		return
 	}
 
@@ -242,4 +272,13 @@ func getPersonalityByType(personalityType string) models.StarPersonality {
 	}
 
 	return personalities[strings.ToLower(personalityType)]
+}
+
+func writeJSONError(w http.ResponseWriter, message string, status int) {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(status)
+	json.NewEncoder(w).Encode(map[string]interface{}{
+		"success": false,
+		"message": message,
+	})
 }
