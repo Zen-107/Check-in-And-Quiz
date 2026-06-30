@@ -44,12 +44,8 @@ func main() {
 	}
 	log.Println("Successfully connected to database")
 
-	// Run migrations
-	err = database.Migrate()
-	if err != nil {
-		log.Fatalf("Failed to migrate database: %v", err)
-	}
-	log.Println("Database migration completed")
+	// ไม่ต้อง migrate เพราะใช้ init.sql ใน Docker แล้ว
+	// Tables are created by init.sql in Docker volume
 
 	// Setup router
 	r := mux.NewRouter()

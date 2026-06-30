@@ -37,8 +37,13 @@ type CheckInRequest struct {
 
 // QuizRequest represents the request body for quiz submission
 type QuizRequest struct {
-	Name    string         `json:"name"`
-	Answers map[string]int `json:"answers"`
+	Name       string         `json:"name"`
+	UserType   string         `json:"user_type"`
+	StaffID    string         `json:"staff_id,omitempty"`
+	Faculty    string         `json:"faculty,omitempty"`
+	Position   string         `json:"position,omitempty"`
+	Occupation string         `json:"occupation,omitempty"`
+	Answers    map[string]int `json:"answers"`
 }
 
 // StarPersonality represents a star personality type
