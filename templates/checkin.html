@@ -3,42 +3,49 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>เช็คชื่อเข้างาน - Check-In</title>
+    <title>เช็คชื่อเข้างาน | จักรวาลแห่งดวงดาว</title>
     <link rel="stylesheet" href="/static/css/styles.css">
 </head>
 <body>
     <!-- Animated Stars Background -->
     <div class="stars-bg"></div>
+    <!-- Floating nebula orbs -->
+    <div class="cosmic-orb" style="width:340px;height:340px;background:#7c3aed;top:-6%;right:-7%;"></div>
+    <div class="cosmic-orb" style="width:280px;height:280px;background:#06b6d4;bottom:-8%;left:-5%;animation-delay:-10s;"></div>
 
     <div class="container">
         <!-- Navigation -->
-        <nav class="nav">
+        <nav class="nav animate-rise">
             <a href="/" class="nav-link">หน้าแรก</a>
             <a href="/checkin" class="nav-link active">เช็คชื่อ</a>
             <a href="/quiz" class="nav-link">แบบทดสอบ</a>
         </nav>
 
         <!-- Page Header -->
-        <header class="page-header">
-            <h1 class="page-title">📝 เช็คชื่อเข้างาน</h1>
-            <p class="page-subtitle">บันทึกการเข้าร่วมของคุณและกลายเป็นส่วนหนึ่งของจักรวาลของเรา</p>
+        <header class="page-header animate-rise">
+            <div class="planet-character" style="width:120px;height:120px;margin-bottom:1rem;">
+                <div class="planet-orb" style="--orb:#06b6d4;--orb-light:#cffafe;--orb-dark:#083344;--aura:#22d3ee;font-size:2.2rem;">📍</div>
+                <div class="planet-ring"></div>
+            </div>
+            <h1 class="page-title">เช็คชื่อเข้างาน</h1>
+            <p class="page-subtitle">บันทึกการเข้าร่วมของคุณ แล้วกลายเป็นดวงดาวดวงใหม่ในจักรวาลของเรา</p>
         </header>
 
         <!-- Check-in Form -->
-        <main class="glass-card" style="max-width: 600px; margin: 0 auto;">
+        <main class="glass-card animate-rise-delay-1" style="max-width:620px;margin:0 auto;">
             <form onsubmit="submitCheckIn(event)">
                 <!-- User Type Selection -->
                 <div class="form-group">
-                    <label class="form-label" for="user-type">ประเภทผู้เข้าร่วม *</label>
-                    <select 
-                        class="form-select" 
-                        id="user-type" 
-                        name="user_type" 
+                    <label class="form-label" for="user-type">ประเภทผู้เข้าร่วม <span style="color:var(--rose);">*</span></label>
+                    <select
+                        class="form-select"
+                        id="user-type"
+                        name="user_type"
                         required
                         onchange="toggleUserTypeFields()"
                     >
                         <option value="">-- เลือกประเภท --</option>
-                        <option value="student">นิสิต/นักศึกษา</option>
+                        <option value="student">นิสิต / นักศึกษา</option>
                         <option value="staff">บุคลากร</option>
                         <option value="external">บุคคลภายนอก</option>
                     </select>
@@ -46,12 +53,12 @@
 
                 <!-- Common Fields -->
                 <div class="form-group">
-                    <label class="form-label" for="name">ชื่อ-นามสกุล *</label>
-                    <input 
-                        type="text" 
-                        class="form-input" 
-                        id="name" 
-                        name="name" 
+                    <label class="form-label" for="name">ชื่อ-นามสกุล <span style="color:var(--rose);">*</span></label>
+                    <input
+                        type="text"
+                        class="form-input"
+                        id="name"
+                        name="name"
                         placeholder="กรอกชื่อและนามสกุลของคุณ"
                         required
                     />
@@ -60,26 +67,12 @@
                 <!-- Student Fields -->
                 <div id="student-fields" class="hidden">
                     <div class="form-group">
-                        <label class="form-label" for="staff_id_student">รหัสนิสิต *</label>
-                        <input 
-                            type="text" 
-                            class="form-input" 
-                            id="staff_id_student" 
-                            name="staff_id" 
-                            placeholder="กรอกรหัสนิสิต"
-                            disabled
-                        />
+                        <label class="form-label" for="staff_id_student">รหัสนิสิต <span style="color:var(--rose);">*</span></label>
+                        <input type="text" class="form-input" id="staff_id_student" name="staff_id" placeholder="กรอกรหัสนิสิต" disabled />
                     </div>
                     <div class="form-group">
-                        <label class="form-label" for="faculty_student">คณะ *</label>
-                        <input 
-                            type="text" 
-                            class="form-input" 
-                            id="faculty_student" 
-                            name="faculty" 
-                            placeholder="กรอกชื่อคณะ"
-                            disabled
-                        />
+                        <label class="form-label" for="faculty_student">คณะ <span style="color:var(--rose);">*</span></label>
+                        <input type="text" class="form-input" id="faculty_student" name="faculty" placeholder="กรอกชื่อคณะ" disabled />
                     </div>
                 </div>
 
@@ -87,68 +80,36 @@
                 <div id="staff-fields" class="hidden">
                     <div class="form-group">
                         <label class="form-label" for="staff_id_staff">รหัสพนักงาน</label>
-                        <input 
-                            type="text" 
-                            class="form-input" 
-                            id="staff_id_staff" 
-                            name="staff_id" 
-                            placeholder="กรอกรหัสพนักงาน (ถ้ามี)"
-                            disabled
-                        />
+                        <input type="text" class="form-input" id="staff_id_staff" name="staff_id" placeholder="กรอกรหัสพนักงาน (ถ้ามี)" disabled />
                     </div>
                     <div class="form-group">
-                        <label class="form-label" for="position_staff">ตำแหน่ง *</label>
-                        <input 
-                            type="text" 
-                            class="form-input" 
-                            id="position_staff" 
-                            name="position" 
-                            placeholder="กรอกตำแหน่ง"
-                            disabled
-                        />
+                        <label class="form-label" for="position_staff">ตำแหน่ง <span style="color:var(--rose);">*</span></label>
+                        <input type="text" class="form-input" id="position_staff" name="position" placeholder="กรอกตำแหน่ง" disabled />
                     </div>
                     <div class="form-group">
-                        <label class="form-label" for="faculty_staff">คณะ/หน่วยงาน *</label>
-                        <input 
-                            type="text" 
-                            class="form-input" 
-                            id="faculty_staff" 
-                            name="faculty" 
-                            placeholder="กรอกคณะหรือหน่วยงาน"
-                            disabled
-                        />
+                        <label class="form-label" for="faculty_staff">คณะ / หน่วยงาน <span style="color:var(--rose);">*</span></label>
+                        <input type="text" class="form-input" id="faculty_staff" name="faculty" placeholder="กรอกคณะหรือหน่วยงาน" disabled />
                     </div>
                 </div>
 
                 <!-- External Fields -->
                 <div id="external-fields" class="hidden">
                     <div class="form-group">
-                        <label class="form-label" for="occupation_external">อาชีพ *</label>
-                        <input 
-                            type="text" 
-                            class="form-input" 
-                            id="occupation_external" 
-                            name="occupation" 
-                            placeholder="กรอกอาชีพของคุณ"
-                            disabled
-                        />
+                        <label class="form-label" for="occupation_external">อาชีพ <span style="color:var(--rose);">*</span></label>
+                        <input type="text" class="form-input" id="occupation_external" name="occupation" placeholder="กรอกอาชีพของคุณ" disabled />
                     </div>
                 </div>
 
                 <!-- Submit Button -->
-                <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 2rem;">
+                <button type="submit" class="btn btn-primary" style="width:100%;margin-top:1.5rem;">
                     ✨ เช็คอินเข้าสู่จักรวาล
                 </button>
             </form>
 
             <!-- Check-in Counter -->
-            <div class="mt-4" style="border-top: 1px solid rgba(255,255,255,0.2); padding-top: 2rem; text-align: center;">
-                <div class="counter-label">
-                    🌌 มีดวงดาวเข้าร่วมจักรวาลแล้ว
-                </div>
-                <div class="counter-display" id="checkin-count">
-                    0
-                </div>
+            <div class="mt-4" style="border-top:1px solid rgba(168,85,247,0.2);padding-top:1.5rem;text-align:center;">
+                <div class="counter-label">🌌 มีดวงดาวเข้าร่วมจักรวาลแล้ว</div>
+                <div class="counter-display" id="checkin-count">0</div>
             </div>
         </main>
     </div>

@@ -3,175 +3,205 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>แบบทดสอบบุคลิกภาพดวงดาว - Star Quiz</title>
+    <title>แบบทดสอบบุคลิกภาพดวงดาว | จักรวาลแห่งดวงดาว</title>
     <link rel="stylesheet" href="/static/css/styles.css">
+    <style>
+        /* Progress tracker for quiz */
+        .quiz-progress {
+            display: flex;
+            justify-content: center;
+            gap: 0.6rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+        .quiz-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.15);
+            border: 1px solid rgba(168,85,247,0.4);
+            transition: all 0.3s ease;
+        }
+        .quiz-dot.answered {
+            background: var(--cyan);
+            border-color: var(--cyan);
+            box-shadow: 0 0 12px var(--cyan);
+        }
+        .quiz-question h3 {
+            color: #fff;
+        }
+        .quiz-q-badge {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--violet-deep), var(--cyan-deep));
+            color: #fff;
+            font-weight: 700;
+            font-family: 'Chakra Petch', sans-serif;
+            margin-right: 0.6rem;
+            box-shadow: 0 0 14px rgba(124,58,237,0.5);
+        }
+    </style>
 </head>
 <body>
     <!-- Animated Stars Background -->
     <div class="stars-bg"></div>
+    <!-- Floating nebula orbs -->
+    <div class="cosmic-orb" style="width:360px;height:360px;background:#ec4899;top:-8%;left:-7%;"></div>
+    <div class="cosmic-orb" style="width:300px;height:300px;background:#7c3aed;bottom:-6%;right:-6%;animation-delay:-12s;"></div>
 
     <div class="container">
         <!-- Navigation -->
-        <nav class="nav">
+        <nav class="nav animate-rise">
             <a href="/" class="nav-link">หน้าแรก</a>
             <a href="/checkin" class="nav-link">เช็คชื่อ</a>
             <a href="/quiz" class="nav-link active">แบบทดสอบ</a>
         </nav>
 
         <!-- Page Header -->
-        <header class="page-header">
-            <h1 class="page-title">⭐ แบบทดสอบบุคลิกภาพดวงดาว</h1>
-            <p class="page-subtitle">ค้นหาดวงดาวประจำตัวของคุณผ่านแบบทดสอบสั้นๆ 5 ข้อ</p>
+        <header class="page-header animate-rise">
+            <div class="planet-character" style="width:130px;height:130px;margin-bottom:1rem;">
+                <div class="planet-orb" style="--orb:#ec4899;--orb-light:#fce7f3;--orb-dark:#500724;--aura:#f472b6;font-size:2.3rem;">🔮</div>
+                <div class="planet-ring"></div>
+                <span class="planet-spark" style="top:10%;right:10%;"></span>
+            </div>
+            <h1 class="page-title">แบบทดสอบบุคลิกภาพดวงดาว</h1>
+            <p class="page-subtitle">ค้นหาดวงดาวประจำตัวของคุณผ่านคำถามสั้นๆ เพียง 5 ข้อ</p>
         </header>
 
         <!-- Quiz Form -->
-        <main class="glass-card" style="max-width: 700px; margin: 0 auto;">
+        <main class="glass-card animate-rise-delay-1" style="max-width:720px;margin:0 auto;">
+            <!-- Progress tracker -->
+            <div class="quiz-progress">
+                <span class="quiz-dot" data-q="1"></span>
+                <span class="quiz-dot" data-q="2"></span>
+                <span class="quiz-dot" data-q="3"></span>
+                <span class="quiz-dot" data-q="4"></span>
+                <span class="quiz-dot" data-q="5"></span>
+            </div>
+
             <form onsubmit="submitQuiz(event)">
                 <!-- Name Field -->
                 <div class="form-group">
-                    <label class="form-label" for="quiz-name">ชื่อของคุณ *</label>
-                    <input 
-                        type="text" 
-                        class="form-input" 
-                        id="quiz-name" 
-                        name="name" 
+                    <label class="form-label" for="quiz-name">ชื่อของคุณ <span style="color:var(--rose);">*</span></label>
+                    <input
+                        type="text"
+                        class="form-input"
+                        id="quiz-name"
+                        name="name"
                         placeholder="กรอกชื่อของคุณเพื่อรับผลลัพธ์"
                         required
                     />
                 </div>
 
-                <hr style="border: 0; border-top: 1px solid rgba(255,255,255,0.2); margin: 2rem 0;" />
+                <hr style="border:0;border-top:1px solid rgba(168,85,247,0.2);margin:1.5rem 0;" />
 
                 <!-- Question 1 -->
                 <div class="quiz-question">
-                    <h3 style="font-size: 1.3rem; margin-bottom: 1rem;">ข้อที่ 1: ในสถานการณ์ที่มีปัญหา คุณมักจะ...</h3>
+                    <h3 style="font-size:1.2rem;margin-bottom:1rem;line-height:1.5;"><span class="quiz-q-badge">1</span>ในสถานการณ์ที่มีปัญหา คุณมักจะ...</h3>
                     <div class="quiz-options">
-                        <div class="quiz-option" onclick="selectOption(this)" data-value="1">
-                            🤝 พยายามประนีประนอมและหาจุดร่วมให้ทุกคนพอใจ
-                        </div>
-                        <div class="quiz-option" onclick="selectOption(this)" data-value="2">
-                            ⚔️ เข้าจัดการปัญหาโดยตรงและไม่ยอมแพ้
-                        </div>
-                        <div class="quiz-option" onclick="selectOption(this)" data-value="3">
-                            💭 ถอยออกมาคิดและใช้จินตนาการหาทางออก
-                        </div>
-                        <div class="quiz-option" onclick="selectOption(this)" data-value="4">
-                            🎯 วิเคราะห์สถานการณ์และวางแผนอย่างมีระบบ
-                        </div>
-                        <div class="quiz-option" onclick="selectOption(this)" data-value="5">
-                            📋 ทำตามขั้นตอนและกฎระเบียบที่กำหนดไว้
-                        </div>
+                        <div class="quiz-option" onclick="selectOption(this)" data-value="1">🤝 พยายามประนีประนอมและหาจุดร่วมให้ทุกคนพอใจ</div>
+                        <div class="quiz-option" onclick="selectOption(this)" data-value="2">⚔️ เข้าจัดการปัญหาโดยตรงและไม่ยอมแพ้</div>
+                        <div class="quiz-option" onclick="selectOption(this)" data-value="3">💭 ถอยออกมาคิดและใช้จินตนาการหาทางออก</div>
+                        <div class="quiz-option" onclick="selectOption(this)" data-value="4">🎯 วิเคราะห์สถานการณ์และวางแผนอย่างมีระบบ</div>
+                        <div class="quiz-option" onclick="selectOption(this)" data-value="5">📋 ทำตามขั้นตอนและกฎระเบียบที่กำหนดไว้</div>
                     </div>
                 </div>
 
                 <!-- Question 2 -->
                 <div class="quiz-question">
-                    <h3 style="font-size: 1.3rem; margin-bottom: 1rem;">ข้อที่ 2: เพื่อนๆ มักจะพูดว่าคุณเป็นคน...</h3>
+                    <h3 style="font-size:1.2rem;margin-bottom:1rem;line-height:1.5;"><span class="quiz-q-badge">2</span>เพื่อนๆ มักจะพูดว่าคุณเป็นคน...</h3>
                     <div class="quiz-options">
-                        <div class="quiz-option" onclick="selectOption(this)" data-value="1">
-                            🌸 อ่อนโยนและเข้าใจความรู้สึกของผู้อื่น
-                        </div>
-                        <div class="quiz-option" onclick="selectOption(this)" data-value="2">
-                            🔥 มีพลังและความกระตือรือร้นตลอดเวลา
-                        </div>
-                        <div class="quiz-option" onclick="selectOption(this)" data-value="3">
-                            🌙 ลึกลับและมีโลกส่วนตัวสูง
-                        </div>
-                        <div class="quiz-option" onclick="selectOption(this)" data-value="4">
-                            📚 ฉลาดและมีคำแนะนำดีๆ เสมอ
-                        </div>
-                        <div class="quiz-option" onclick="selectOption(this)" data-value="5">
-                            🏆 จริงจังและเชื่อถือได้
-                        </div>
+                        <div class="quiz-option" onclick="selectOption(this)" data-value="1">🌸 อ่อนโยนและเข้าใจความรู้สึกของผู้อื่น</div>
+                        <div class="quiz-option" onclick="selectOption(this)" data-value="2">🔥 มีพลังและความกระตือรือร้นตลอดเวลา</div>
+                        <div class="quiz-option" onclick="selectOption(this)" data-value="3">🌙 ลึกลับและมีโลกส่วนตัวสูง</div>
+                        <div class="quiz-option" onclick="selectOption(this)" data-value="4">📚 ฉลาดและมีคำแนะนำดีๆ เสมอ</div>
+                        <div class="quiz-option" onclick="selectOption(this)" data-value="5">🏆 จริงจังและเชื่อถือได้</div>
                     </div>
                 </div>
 
                 <!-- Question 3 -->
                 <div class="quiz-question">
-                    <h3 style="font-size: 1.3rem; margin-bottom: 1rem;">ข้อที่ 3: เวลาว่างคุณชอบทำกิจกรรมแบบไหน?</h3>
+                    <h3 style="font-size:1.2rem;margin-bottom:1rem;line-height:1.5;"><span class="quiz-q-badge">3</span>เวลาว่างคุณชอบทำกิจกรรมแบบไหน?</h3>
                     <div class="quiz-options">
-                        <div class="quiz-option" onclick="selectOption(this)" data-value="1">
-                            🎨 ทำงานศิลปะหรือฟังเพลงสบายๆ
-                        </div>
-                        <div class="quiz-option" onclick="selectOption(this)" data-value="2">
-                            🏃‍♂️ ออกกำลังกายหรือทำกิจกรรมกลางแจ้ง
-                        </div>
-                        <div class="quiz-option" onclick="selectOption(this)" data-value="3">
-                            📖 อ่านหนังสือหรือดูหนังแฟนตาซี
-                        </div>
-                        <div class="quiz-option" onclick="selectOption(this)" data-value="4">
-                            🧠 เรียนรู้สิ่งใหม่ๆ หรือแก้ปัญหา
-                        </div>
-                        <div class="quiz-option" onclick="selectOption(this)" data-value="5">
-                            📝 จัดระเบียบชีวิตหรือวางแผนอนาคต
-                        </div>
+                        <div class="quiz-option" onclick="selectOption(this)" data-value="1">🎨 ทำงานศิลปะหรือฟังเพลงสบายๆ</div>
+                        <div class="quiz-option" onclick="selectOption(this)" data-value="2">🏃‍♂️ ออกกำลังกายหรือทำกิจกรรมกลางแจ้ง</div>
+                        <div class="quiz-option" onclick="selectOption(this)" data-value="3">📖 อ่านหนังสือหรือดูหนังแฟนตาซี</div>
+                        <div class="quiz-option" onclick="selectOption(this)" data-value="4">🧠 เรียนรู้สิ่งใหม่ๆ หรือแก้ปัญหา</div>
+                        <div class="quiz-option" onclick="selectOption(this)" data-value="5">📝 จัดระเบียบชีวิตหรือวางแผนอนาคต</div>
                     </div>
                 </div>
 
                 <!-- Question 4 -->
                 <div class="quiz-question">
-                    <h3 style="font-size: 1.3rem; margin-bottom: 1rem;">ข้อที่ 4: สิ่งที่คุณให้ความสำคัญที่สุดคือ...</h3>
+                    <h3 style="font-size:1.2rem;margin-bottom:1rem;line-height:1.5;"><span class="quiz-q-badge">4</span>สิ่งที่คุณให้ความสำคัญที่สุดคือ...</h3>
                     <div class="quiz-options">
-                        <div class="quiz-option" onclick="selectOption(this)" data-value="1">
-                            💕 ความสัมพันธ์ที่ดีกับคนรอบข้าง
-                        </div>
-                        <div class="quiz-option" onclick="selectOption(this)" data-value="2">
-                            🏆 ความสำเร็จและการเอาชนะอุปสรรค
-                        </div>
-                        <div class="quiz-option" onclick="selectOption(this)" data-value="3">
-                            🌈 อิสระในการคิดและสร้างสรรค์
-                        </div>
-                        <div class="quiz-option" onclick="selectOption(this)" data-value="4">
-                            🎓 ความรู้และการพัฒนาตนเอง
-                        </div>
-                        <div class="quiz-option" onclick="selectOption(this)" data-value="5">
-                            ⚖️ ความมั่นคงและความรับผิดชอบ
-                        </div>
+                        <div class="quiz-option" onclick="selectOption(this)" data-value="1">💕 ความสัมพันธ์ที่ดีกับคนรอบข้าง</div>
+                        <div class="quiz-option" onclick="selectOption(this)" data-value="2">🏆 ความสำเร็จและการเอาชนะอุปสรรค</div>
+                        <div class="quiz-option" onclick="selectOption(this)" data-value="3">🌈 อิสระในการคิดและสร้างสรรค์</div>
+                        <div class="quiz-option" onclick="selectOption(this)" data-value="4">🎓 ความรู้และการพัฒนาตนเอง</div>
+                        <div class="quiz-option" onclick="selectOption(this)" data-value="5">⚖️ ความมั่นคงและความรับผิดชอบ</div>
                     </div>
                 </div>
 
                 <!-- Question 5 -->
                 <div class="quiz-question">
-                    <h3 style="font-size: 1.3rem; margin-bottom: 1rem;">ข้อที่ 5: ถ้าต้องทำงานเป็นทีม คุณมักจะเป็น...</h3>
+                    <h3 style="font-size:1.2rem;margin-bottom:1rem;line-height:1.5;"><span class="quiz-q-badge">5</span>ถ้าต้องทำงานเป็นทีม คุณมักจะเป็น...</h3>
                     <div class="quiz-options">
-                        <div class="quiz-option" onclick="selectOption(this)" data-value="1">
-                            🤗 ผู้ประสานงานที่ทำให้ทุกคนมีความสุข
-                        </div>
-                        <div class="quiz-option" onclick="selectOption(this)" data-value="2">
-                            🚀 ผู้นำที่ผลักดันให้งานสำเร็จ
-                        </div>
-                        <div class="quiz-option" onclick="selectOption(this)" data-value="3">
-                            🎨 นักคิดไอเดียสร้างสรรค์
-                        </div>
-                        <div class="quiz-option" onclick="selectOption(this)" data-value="4">
-                            🧐 ที่ปรึกษาที่ให้คำแนะนำดีๆ
-                        </div>
-                        <div class="quiz-option" onclick="selectOption(this)" data-value="5">
-                            📋 ผู้ดูแลรายละเอียดและความถูกต้อง
-                        </div>
+                        <div class="quiz-option" onclick="selectOption(this)" data-value="1">🤗 ผู้ประสานงานที่ทำให้ทุกคนมีความสุข</div>
+                        <div class="quiz-option" onclick="selectOption(this)" data-value="2">🚀 ผู้นำที่ผลักดันให้งานสำเร็จ</div>
+                        <div class="quiz-option" onclick="selectOption(this)" data-value="3">🎨 นักคิดไอเดียสร้างสรรค์</div>
+                        <div class="quiz-option" onclick="selectOption(this)" data-value="4">🧐 ที่ปรึกษาที่ให้คำแนะนำดีๆ</div>
+                        <div class="quiz-option" onclick="selectOption(this)" data-value="5">📋 ผู้ดูแลรายละเอียดและความถูกต้อง</div>
                     </div>
                 </div>
 
                 <!-- Submit Button -->
-                <button type="submit" class="btn btn-secondary" style="width: 100%; margin-top: 2rem;">
+                <button type="submit" class="btn btn-secondary" style="width:100%;margin-top:1.5rem;">
                     ✨ ดูผลลัพธ์ดวงดาวของฉัน
                 </button>
             </form>
         </main>
 
         <!-- Info Section -->
-        <div class="glass-card mt-4" style="max-width: 700px; margin: 2rem auto; text-align: center;">
-            <h3 style="font-size: 1.5rem; margin-bottom: 1rem;">🔮 เกี่ยวกับแบบทดสอบ</h3>
-            <p style="color: rgba(255,255,255,0.8); line-height: 1.8;">
-                แบบทดสอบนี้ได้รับแรงบันดาลใจจากลักษณะของดวงดาวต่างๆ ในจักรวาล 
+        <div class="glass-card mt-4 animate-rise-delay-2" style="max-width:720px;margin:1.5rem auto;text-align:center;">
+            <h3 style="font-size:1.4rem;margin-bottom:1rem;color:#fff;">🔮 เกี่ยวกับแบบทดสอบ</h3>
+            <p style="color:var(--text-soft);line-height:1.8;">
+                แบบทดสอบนี้ได้รับแรงบันดาลใจจากลักษณะของดวงดาวต่างๆ ในจักรวาล
                 ผลลัพธ์จะช่วยให้คุณเข้าใจตัวเองมากขึ้นผ่านคุณสมบัติของดวงดาวประจำตัวคุณ
             </p>
-            <p style="color: rgba(255,255,255,0.6); font-size: 0.9rem; margin-top: 1rem;">
-                ⏱️ ใช้เวลาเพียง 2-3 นาที | 📊 5 คำถาม | 🌟 5 ผลลัพธ์ที่เป็นไปได้
-            </p>
+            <div style="display:flex;gap:1.5rem;justify-content:center;flex-wrap:wrap;margin-top:1.2rem;">
+                <span style="color:var(--text-muted);font-size:0.9rem;">⏱️ ใช้เวลาเพียง 2-3 นาที</span>
+                <span style="color:var(--text-muted);font-size:0.9rem;">📊 5 คำถาม</span>
+                <span style="color:var(--text-muted);font-size:0.9rem;">🌟 5 ผลลัพธ์ที่เป็นไปได้</span>
+            </div>
         </div>
     </div>
 
     <script src="/static/js/app.js"></script>
+    <script>
+        // Progress tracker: light up a dot when its question is answered
+        (function() {
+            const dots = document.querySelectorAll('.quiz-dot');
+            const origSelect = window.selectOption;
+            window.selectOption = function(option) {
+                if (typeof origSelect === 'function') origSelect(option);
+                // find which question this option belongs to
+                const questions = document.querySelectorAll('.quiz-question');
+                questions.forEach((q, i) => {
+                    const dot = dots[i];
+                    if (!dot) return;
+                    if (q.querySelector('.quiz-option.selected')) {
+                        dot.classList.add('answered');
+                    } else {
+                        dot.classList.remove('answered');
+                    }
+                });
+            };
+        })();
+    </script>
 </body>
 </html>

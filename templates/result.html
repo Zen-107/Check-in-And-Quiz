@@ -3,134 +3,142 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ผลลัพธ์ดวงดาว - {{.Personality.Name}}</title>
+    <title>ผลลัพธ์ดวงดาว | {{.Personality.Name}}</title>
     <link rel="stylesheet" href="/static/css/styles.css">
     <style>
+        /* Per-personality aura colors injected from the template */
         .result-card-custom {
-            background: linear-gradient(135deg, {{.Personality.Color}}40 0%, {{.Personality.Color}}20 100%);
+            --aura: {{.Personality.Color}};
+            --orb: {{.Personality.Color}};
+            --orb-light: rgba(255,255,255,0.92);
+            --orb-dark: rgba(0,0,0,0.55);
             border-color: {{.Personality.Color}};
+            box-shadow: 0 0 60px {{.Personality.Color}}40, inset 0 0 40px {{.Personality.Color}}18;
         }
         .result-title-custom {
-            color: {{.Personality.Color}};
+            color: #ffffff;
+            text-shadow: 0 0 28px {{.Personality.Color}}, 0 0 60px {{.Personality.Color}}80;
+        }
+        .mini-planet-token {
+            background: radial-gradient(circle at 32% 28%, rgba(255,255,255,0.9), var(--tk-color) 55%, rgba(0,0,0,0.4));
+            box-shadow: 0 0 20px var(--tk-color);
         }
     </style>
 </head>
 <body>
     <!-- Animated Stars Background -->
     <div class="stars-bg"></div>
+    <!-- Floating nebula orbs -->
+    <div class="cosmic-orb" style="width:380px;height:380px;background:{{.Personality.Color}};top:-8%;left:-7%;opacity:0.22;"></div>
+    <div class="cosmic-orb" style="width:300px;height:300px;background:#7c3aed;bottom:-6%;right:-6%;opacity:0.25;animation-delay:-12s;"></div>
 
     <div class="container">
         <!-- Navigation -->
-        <nav class="nav">
+        <nav class="nav animate-rise">
             <a href="/" class="nav-link">หน้าแรก</a>
             <a href="/checkin" class="nav-link">เช็คชื่อ</a>
             <a href="/quiz" class="nav-link">แบบทดสอบ</a>
         </nav>
 
         <!-- Result Card -->
-        <main style="max-width: 700px; margin: 0 auto;">
-            <div class="result-card result-card-custom">
-                <div class="result-icon">{{.Personality.Icon}}</div>
-                
-                <h1 class="result-title result-title-custom">
-                    {{.Personality.Name}}
-                </h1>
-                
-                <p style="font-size: 1.1rem; color: rgba(255,255,255,0.9); margin-bottom: 1rem;">
-                    ยินดีด้วย <strong>{{.Name}}</strong>!
-                </p>
-                
-                <p class="result-description">
-                    {{.Personality.Description}}
+        <main style="max-width:720px;margin:0 auto;">
+            <div class="result-card result-card-custom animate-rise-delay-1">
+                <!-- Planet Character (uses personality color via CSS vars) -->
+                <div class="planet-character" style="width:180px;height:180px;margin-bottom:1.5rem;">
+                    <div class="planet-orb">{{.Personality.Icon}}</div>
+                    <div class="planet-ring"></div>
+                    <span class="planet-spark" style="top:6%;right:12%;"></span>
+                    <span class="planet-spark" style="bottom:14%;left:8%;background:#22d3ee;box-shadow:0 0 8px #22d3ee;animation-delay:1s;"></span>
+                    <span class="planet-spark" style="top:40%;right:-2%;animation-delay:0.5s;"></span>
+                </div>
+
+                <span style="display:inline-block;padding:0.35rem 1.1rem;border-radius:999px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.2);color:var(--text-soft);font-size:0.82rem;letter-spacing:0.06em;margin-bottom:1rem;">✦ ดวงดาวประจำตัวของคุณ ✦</span>
+
+                <h1 class="result-title result-title-custom">{{.Personality.Name}}</h1>
+
+                <p style="font-size:1.15rem;color:var(--text-bright);margin-bottom:1rem;">
+                    ยินดีด้วย <strong style="color:#fff;">{{.Name}}</strong>!
                 </p>
 
-                <div style="margin-bottom: 1.5rem;">
-                    <h3 style="font-size: 1.2rem; margin-bottom: 1rem; opacity: 0.9;">
-                        ✨ ลักษณะเด่นของคุณ
-                    </h3>
+                <p class="result-description">{{.Personality.Description}}</p>
+
+                <!-- Traits -->
+                <div style="margin-bottom:1.5rem;">
+                    <h3 style="font-size:1.05rem;margin-bottom:1rem;opacity:0.85;letter-spacing:0.04em;">✨ ลักษณะเด่นของคุณ</h3>
                     <div class="result-traits">
                         {{range .Personality.Traits}}
-                        <span class="trait-badge" style="border: 1px solid {{$.Personality.Color}};">
-                            {{.}}
-                        </span>
+                        <span class="trait-badge" style="border:1px solid {{$.Personality.Color}};box-shadow:0 0 12px {{$.Personality.Color}}30;">{{.}}</span>
                         {{end}}
                     </div>
                 </div>
 
-                <div style="background: rgba(255,255,255,0.1); padding: 1.5rem; border-radius: 15px; margin: 2rem 0;">
-                    <h3 style="font-size: 1.1rem; margin-bottom: 0.5rem;">💫 คำแนะนำสำหรับคุณ</h3>
-                    <p style="color: rgba(255,255,255,0.8); line-height: 1.6; font-size: 0.95rem;">
+                <!-- Advice -->
+                <div style="background:rgba(255,255,255,0.06);backdrop-filter:blur(8px);padding:1.5rem;border-radius:18px;margin:1.5rem 0;border:1px solid rgba(255,255,255,0.1);">
+                    <h3 style="font-size:1.05rem;margin-bottom:0.6rem;">💫 คำแนะนำสำหรับคุณ</h3>
+                    <p style="color:var(--text-soft);line-height:1.7;font-size:0.96rem;">
                         {{if eq .Personality.Type "venus"}}
-                        ใช้ความอ่อนโยนและศิลปะของคุณสร้างแรงบันดาลใจให้คนรอบข้าง 
-                        อย่าลืมดูแลตัวเองบ้างนะ
+                        ใช้ความอ่อนโยนและศิลปะของคุณสร้างแรงบันดาลใจให้คนรอบข้าง อย่าลืมดูแลตัวเองบ้างนะ
                         {{else if eq .Personality.Type "mars"}}
-                        พลังและความกล้าหาญของคุณสามารถเปลี่ยนแปลงโลกได้ 
-                        แต่อย่าลืมฟังความคิดเห็นของผู้อื่นด้วย
+                        พลังและความกล้าหาญของคุณสามารถเปลี่ยนแปลงโลกได้ แต่อย่าลืมฟังความคิดเห็นของผู้อื่นด้วย
                         {{else if eq .Personality.Type "neptune"}}
-                        จินตนาการอันไร้ขีดจำกัดคือของขวัญที่มีค่าของคุณ 
-                        แบ่งปันมันกับโลกใบนี้เถอะ
+                        จินตนาการอันไร้ขีดจำกัดคือของขวัญที่มีค่าของคุณ แบ่งปันมันกับโลกใบนี้เถอะ
                         {{else if eq .Personality.Type "jupiter"}}
-                        ปัญญาและความรู้ของคุณคือแสงสว่างนำทางให้ผู้อื่น 
-                        ใช้มันเพื่อสร้างสรรค์สิ่งดีๆ
+                        ปัญญาและความรู้ของคุณคือแสงสว่างนำทางให้ผู้อื่น ใช้มันเพื่อสร้างสรรค์สิ่งดีๆ
                         {{else if eq .Personality.Type "saturn"}}
-                        วินัยและความรับผิดชอบของคุณคือรากฐานที่มั่นคง 
-                        แต่อย่าลืมผ่อนคลายบ้างนะ
+                        วินัยและความรับผิดชอบของคุณคือรากฐานที่มั่นคง แต่อย่าลืมผ่อนคลายบ้างนะ
                         {{end}}
                     </p>
                 </div>
 
                 <!-- Action Buttons -->
-                <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; margin-top: 2rem;">
-                    <button onclick="shareResult()" class="btn btn-primary">
-                        📤 แชร์ผลลัพธ์
-                    </button>
-                    <button onclick="downloadResult()" class="btn btn-secondary">
-                        💾 บันทึกผลลัพธ์
-                    </button>
-                    <a href="/quiz" class="btn" style="background: rgba(255,255,255,0.2); color: white;">
-                        🔄 ทำแบบทดสอบอีกครั้ง
-                    </a>
+                <div style="display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;margin-top:1.5rem;">
+                    <button onclick="shareResult()" class="btn btn-primary">📤 แชร์ผลลัพธ์</button>
+                    <button onclick="downloadResult()" class="btn btn-secondary">💾 บันทึกผลลัพธ์</button>
+                    <a href="/quiz" class="btn" style="background:rgba(255,255,255,0.08);color:#fff;border:1px solid rgba(255,255,255,0.2);">🔄 ทำแบบทดสอบใหม่</a>
                 </div>
             </div>
 
             <!-- Share Info -->
-            <div class="glass-card mt-4" style="text-align: center;">
-                <h3 style="font-size: 1.3rem; margin-bottom: 1rem;">🌟 ดวงดาวของคุณในจักรวาล</h3>
-                <p style="color: rgba(255,255,255,0.8); line-height: 1.8;">
-                    ดวงดาวประจำตัวของคุณสะท้อนถึงบุคลิกภาพและจุดแข็งภายในตัวคุณ 
+            <div class="glass-card mt-4 animate-rise-delay-2" style="text-align:center;">
+                <h3 style="font-size:1.3rem;margin-bottom:1rem;color:#fff;">🌟 ดวงดาวของคุณในจักรวาล</h3>
+                <p style="color:var(--text-soft);line-height:1.8;">
+                    ดวงดาวประจำตัวของคุณสะท้อนถึงบุคลิกภาพและจุดแข็งภายในตัวคุณ
                     ใช้ข้อมูลนี้เป็นแนวทางในการพัฒนาตนเองและเข้าใจคนอื่นมากขึ้น
                 </p>
-                <p style="color: rgba(255,255,255,0.6); font-size: 0.9rem; margin-top: 1rem;">
+                <p style="color:var(--text-muted);font-size:0.9rem;margin-top:1rem;">
                     📸 แคปหน้าจอเพื่อเก็บผลลัพธ์ที่สวยงามนี้ไว้ดูเล่นหรือแชร์ลงโซเชียลมีเดีย
                 </p>
             </div>
 
-            <!-- Other Stars Info -->
-            <div class="mt-4" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
-                <div class="glass-card" style="text-align: center; padding: 1.5rem;">
-                    <div style="font-size: 2rem; margin-bottom: 0.5rem;">💕</div>
-                    <h4 style="font-size: 1rem; margin-bottom: 0.3rem;">ดาวศุกร์</h4>
-                    <p style="font-size: 0.8rem; color: rgba(255,255,255,0.7);">นักประนีประนอม</p>
-                </div>
-                <div class="glass-card" style="text-align: center; padding: 1.5rem;">
-                    <div style="font-size: 2rem; margin-bottom: 0.5rem;">⚔️</div>
-                    <h4 style="font-size: 1rem; margin-bottom: 0.3rem;">ดาวอังคาร</h4>
-                    <p style="font-size: 0.8rem; color: rgba(255,255,255,0.7);">นักรบกล้าหาญ</p>
-                </div>
-                <div class="glass-card" style="text-align: center; padding: 1.5rem;">
-                    <div style="font-size: 2rem; margin-bottom: 0.5rem;">🌊</div>
-                    <h4 style="font-size: 1rem; margin-bottom: 0.3rem;">ดาวเนปจูน</h4>
-                    <p style="font-size: 0.8rem; color: rgba(255,255,255,0.7);">ช่างจินตนาการ</p>
-                </div>
-                <div class="glass-card" style="text-align: center; padding: 1.5rem;">
-                    <div style="font-size: 2rem; margin-bottom: 0.5rem;">🪐</div>
-                    <h4 style="font-size: 1rem; margin-bottom: 0.3rem;">ดาวพฤหัสบดี</h4>
-                    <p style="font-size: 0.8rem; color: rgba(255,255,255,0.7);">ผู้นำแห่งปัญญา</p>
-                </div>
-                <div class="glass-card" style="text-align: center; padding: 1.5rem;">
-                    <div style="font-size: 2rem; margin-bottom: 0.5rem;">💍</div>
-                    <h4 style="font-size: 1rem; margin-bottom: 0.3rem;">ดาวเสาร์</h4>
-                    <p style="font-size: 0.8rem; color: rgba(255,255,255,0.7);">ผู้มีวินัย</p>
+            <!-- Other Stars Gallery -->
+            <div class="mt-4">
+                <h3 class="text-center" style="font-size:1.3rem;margin-bottom:1.2rem;color:#fff;">✦ ดวงดาวทั้งหมดในจักรวาล ✦</h3>
+                <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:1rem;">
+                    <div class="glass-card" style="text-align:center;padding:1.5rem 1rem;">
+                        <div class="mini-planet mini-planet-token" style="--tk-color:#FF69B4;">💕</div>
+                        <h4 style="font-size:1rem;margin-bottom:0.3rem;color:#fff;">ดาวศุกร์</h4>
+                        <p style="font-size:0.82rem;color:var(--text-muted);">นักประนีประนอม</p>
+                    </div>
+                    <div class="glass-card" style="text-align:center;padding:1.5rem 1rem;">
+                        <div class="mini-planet mini-planet-token" style="--tk-color:#FF4500;">⚔️</div>
+                        <h4 style="font-size:1rem;margin-bottom:0.3rem;color:#fff;">ดาวอังคาร</h4>
+                        <p style="font-size:0.82rem;color:var(--text-muted);">นักรบกล้าหาญ</p>
+                    </div>
+                    <div class="glass-card" style="text-align:center;padding:1.5rem 1rem;">
+                        <div class="mini-planet mini-planet-token" style="--tk-color:#4169E1;">🌊</div>
+                        <h4 style="font-size:1rem;margin-bottom:0.3rem;color:#fff;">ดาวเนปจูน</h4>
+                        <p style="font-size:0.82rem;color:var(--text-muted);">ช่างจินตนาการ</p>
+                    </div>
+                    <div class="glass-card" style="text-align:center;padding:1.5rem 1rem;">
+                        <div class="mini-planet mini-planet-token" style="--tk-color:#FFD700;">🪐</div>
+                        <h4 style="font-size:1rem;margin-bottom:0.3rem;color:#fff;">ดาวพฤหัสบดี</h4>
+                        <p style="font-size:0.82rem;color:var(--text-muted);">ผู้นำแห่งปัญญา</p>
+                    </div>
+                    <div class="glass-card" style="text-align:center;padding:1.5rem 1rem;">
+                        <div class="mini-planet mini-planet-token" style="--tk-color:#C0C0C0;">💍</div>
+                        <h4 style="font-size:1rem;margin-bottom:0.3rem;color:#fff;">ดาวเสาร์</h4>
+                        <p style="font-size:0.82rem;color:var(--text-muted);">ผู้มีวินัย</p>
+                    </div>
                 </div>
             </div>
         </main>
