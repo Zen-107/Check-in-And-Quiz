@@ -3,620 +3,426 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Star Exhibition - จักรวาลแห่งดวงดาว</title>
-    
-    <!-- Tailwind CSS CDN -->
+    <title>จักรวาลแห่งดวงดาว | งานนิทรรศการ</title>
+
+    <!-- Tailwind CSS via CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
-    
+
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&family=Orbitron:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    
-    <!-- Tailwind Config for Custom Colors -->
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        'space-dark': '#0B0F26',
-                        'space-medium': '#1A1C38',
-                        'purple-glow': '#7C4DFF',
-                        'pink-glow': '#E040FB',
-                        'star-gold': '#FFD700',
-                        'star-light': '#FFF9E6'
-                    },
-                    fontFamily: {
-                        'kanit': ['Kanit', 'sans-serif'],
-                        'orbitron': ['Orbitron', 'sans-serif']
-                    },
-                    animation: {
-                        'twinkle': 'twinkle 3s ease-in-out infinite',
-                        'float': 'float 6s ease-in-out infinite',
-                        'pulse-glow': 'pulseGlow 2s ease-in-out infinite',
-                        'shooting-star': 'shootingStar 3s linear infinite'
-                    }
-                }
-            }
-        }
-    </script>
-    
-    <!-- Custom CSS -->
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@300;400;500;700&display=swap" rel="stylesheet">
+
     <style>
-        @keyframes twinkle {
-            0%, 100% { opacity: 0.3; transform: scale(1); }
-            50% { opacity: 1; transform: scale(1.2); }
+        body {
+            font-family: 'Noto Sans Thai', sans-serif;
+            overflow-x: hidden;
+            background-color: #0B0F26; /* Fallback */
         }
         
-        @keyframes float {
-            0%, 100% { transform: translateY(0px); }
-            50% { transform: translateY(-20px); }
+        /* Color Variables & Utilities */
+        .text-glow-purple {
+            color: #7C4DFF;
+            text-shadow: 0 0 15px rgba(124, 77, 255, 0.6);
         }
-        
-        @keyframes pulseGlow {
-            0%, 100% { 
-                box-shadow: 0 0 20px rgba(124, 77, 255, 0.5), 
-                            0 0 40px rgba(224, 64, 251, 0.3);
-            }
-            50% { 
-                box-shadow: 0 0 40px rgba(124, 77, 255, 0.8), 
-                            0 0 80px rgba(224, 64, 251, 0.6);
-            }
+        .text-glow-pink {
+            color: #E040FB;
+            text-shadow: 0 0 15px rgba(224, 64, 251, 0.6);
         }
-        
-        @keyframes shootingStar {
-            0% {
-                transform: translateX(0) translateY(0);
-                opacity: 1;
-            }
-            100% {
-                transform: translateX(300px) translateY(300px);
-                opacity: 0;
-            }
+        .text-gold {
+            color: #FFD700;
+            text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
         }
-        
-        /* Animated Starry Background */
-        .starry-bg {
+
+        /* Animated Background */
+        .space-background {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
+            pointer-events: none;
             z-index: -1;
-            background: linear-gradient(135deg, #0B0F26 0%, #1A1C38 50%, #2D1B4E 100%);
-            overflow: hidden;
+            background: linear-gradient(135deg, #0B0F26 0%, #1A1C38 50%, #2a1b3d 100%);
         }
-        
         .star {
             position: absolute;
-            background: white;
+            background-color: white;
             border-radius: 50%;
-            animation: twinkle 3s ease-in-out infinite;
+            animation: twinkle var(--duration) infinite ease-in-out;
+            box-shadow: 0 0 4px rgba(255, 255, 255, 0.8);
         }
-        
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.3; transform: scale(0.8); }
+            50% { opacity: 1; transform: scale(1.2); }
+        }
         .nebula {
             position: absolute;
             border-radius: 50%;
-            filter: blur(60px);
-            opacity: 0.3;
-            animation: float 8s ease-in-out infinite;
+            filter: blur(80px);
+            opacity: 0.15;
+            animation: float 40s infinite linear;
         }
-        
+        @keyframes float {
+            from { transform: translate(0, 0) rotate(0deg); }
+            to { transform: translate(20vw, -10vh) rotate(360deg); }
+        }
         .shooting-star {
             position: absolute;
-            width: 3px;
-            height: 3px;
-            background: linear-gradient(45deg, #FFD700, transparent);
-            border-radius: 50%;
-            box-shadow: 0 0 10px #FFD700, 0 0 20px #FFD700;
-            animation: shootingStar 3s linear infinite;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #fff, #7C4DFF);
+            transform: rotate(-45deg);
+            opacity: 0;
+            animation: shoot 4s forwards;
+            box-shadow: 0 0 10px #7C4DFF;
         }
-        
-        /* Glassmorphism Card */
-        .glass-card {
-            background: rgba(26, 28, 56, 0.6);
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        @keyframes shoot {
+            0% { width: 0; opacity: 0; transform: translate(0, 0) rotate(-45deg); }
+            10% { opacity: 1; }
+            20% { width: 150px; opacity: 0; transform: translate(100px, 100px) rotate(-45deg); }
+            100% { opacity: 0; }
         }
-        
-        /* Glowing Text */
-        .glow-text {
-            text-shadow: 0 0 10px rgba(124, 77, 255, 0.8),
-                         0 0 20px rgba(124, 77, 255, 0.5),
-                         0 0 30px rgba(224, 64, 251, 0.3);
+
+        /* UI Components */
+        .modal-overlay {
+            background-color: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(5px);
         }
-        
-        /* Counter Animation */
-        .counter-number {
-            font-family: 'Orbitron', sans-serif;
-            background: linear-gradient(135deg, #FFD700 0%, #FFF9E6 50%, #FFD700 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            animation: pulse-glow 2s ease-in-out infinite;
+        .modal-card {
+            background: rgba(26, 28, 56, 0.95);
+            border: 1px solid rgba(124, 77, 255, 0.4);
+            box-shadow: 0 0 30px rgba(124, 77, 255, 0.2);
         }
-        
-        /* Button Glow Effect */
-        .btn-glow {
+        .form-input {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(124, 77, 255, 0.3);
+            color: #fff;
+            transition: all 0.3s;
+        }
+        .form-input:focus {
+            outline: none;
+            border-color: #E040FB;
+            background: rgba(255, 255, 255, 0.1);
+            box-shadow: 0 0 15px rgba(224, 64, 251, 0.3);
+        }
+        .btn-primary {
+            background: linear-gradient(45deg, #7C4DFF, #E040FB);
+            color: white;
             transition: all 0.3s ease;
             position: relative;
             overflow: hidden;
         }
-        
-        .btn-glow::before {
+        .btn-primary::after {
             content: '';
             position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.3), transparent);
-            transform: rotate(45deg);
-            transition: all 0.5s ease;
-            opacity: 0;
+            top: 0; left: -100%;
+            width: 100%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+            transition: 0.5s;
         }
-        
-        .btn-glow:hover::before {
-            opacity: 1;
+        .btn-primary:hover::after {
             left: 100%;
         }
-        
-        .btn-glow:hover {
+        .btn-primary:hover {
             transform: translateY(-3px);
-            box-shadow: 0 10px 40px rgba(124, 77, 255, 0.6),
-                        0 0 20px rgba(224, 64, 251, 0.4);
+            box-shadow: 0 10px 25px rgba(224, 64, 251, 0.5);
         }
-        
-        /* Modal Styles */
-        .modal-overlay {
-            background: rgba(11, 15, 38, 0.9);
+
+        .counter-display {
+            background: rgba(11, 15, 38, 0.6);
+            border: 1px solid rgba(255, 215, 0, 0.3);
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.1);
             backdrop-filter: blur(10px);
         }
-        
-        /* Scrollbar */
-        ::-webkit-scrollbar {
+        .counter-number {
+            background: linear-gradient(to right, #FFD700, #FDB931, #E040FB);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-feature-settings: "tnum";
+            font-variant-numeric: tabular-nums;
+        }
+
+        /* Sparkle Effect */
+        .sparkle {
+            position: absolute;
             width: 8px;
+            height: 8px;
+            background-color: #FFD700;
+            border-radius: 50%;
+            pointer-events: none;
+            animation: sparkle-fall 1s ease-out forwards;
+            box-shadow: 0 0 10px #FFD700;
         }
-        
-        ::-webkit-scrollbar-track {
-            background: #1A1C38;
-        }
-        
-        ::-webkit-scrollbar-thumb {
-            background: linear-gradient(135deg, #7C4DFF, #E040FB);
-            border-radius: 4px;
+        @keyframes sparkle-fall {
+            0% { transform: translate(0, 0) scale(1); opacity: 1; }
+            100% { transform: translate(var(--tx), var(--ty)) scale(0); opacity: 0; }
         }
     </style>
 </head>
-<body class="font-kanit min-h-screen relative overflow-x-hidden">
+<body class="text-white min-h-screen relative flex flex-col items-center justify-center p-4 selection:bg-purple-500 selection:text-white">
+
+<!-- Twinkling Background Elements -->
+<div class="space-background" id="space-bg"></div>
+
+<!-- Main Content -->
+<div class="relative z-10 w-full max-w-4xl mx-auto text-center animate-fade-in-up">
     
-    <!-- Animated Background -->
-    <div class="starry-bg" id="starryBg"></div>
-    
-    <!-- Main Container -->
-    <div class="relative z-10 min-h-screen flex flex-col items-center justify-center px-4 py-8">
-        
-        <!-- Header Section -->
-        <header class="text-center mb-12 animate-float">
-            <h1 class="text-5xl md:text-7xl font-orbitron font-bold text-white glow-text mb-4">
-                STAR EXHIBITION
-            </h1>
-            <p class="text-xl md:text-2xl text-purple-200 font-light tracking-wider">
-                ✨ จักรวาลแห่งดวงดาว ✨
-            </p>
-        </header>
-        
-        <!-- Real-time Counter Card -->
-        <div class="glass-card rounded-3xl p-8 mb-12 max-w-md w-full text-center transform hover:scale-105 transition-transform duration-300">
-            <div class="mb-4">
-                <svg class="w-16 h-16 mx-auto text-star-gold animate-pulse" fill="currentColor" viewBox="0 0 20 20">
-                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
-                </svg>
-            </div>
-            <h2 class="text-lg text-purple-200 mb-2">มีดวงดาวเข้าร่วมจักรวาลแล้ว</h2>
-            <div class="counter-number text-6xl md:text-7xl font-bold mb-2" id="participantCount">
-                0
-            </div>
-            <p class="text-sm text-gray-400">ดวงดาว</p>
-            
-            <!-- Live Indicator -->
-            <div class="flex items-center justify-center mt-4 space-x-2">
-                <span class="relative flex h-3 w-3">
-                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
-                    <span class="relative inline-flex rounded-full h-3 w-3 bg-green-500"></span>
-                </span>
-                <span class="text-xs text-green-400">Real-time</span>
-            </div>
-        </div>
-        
-        <!-- CTA Button -->
-        <button onclick="openCheckInModal()" class="btn-glow bg-gradient-to-r from-purple-glow to-pink-glow text-white font-orbitron font-bold text-xl md:text-2xl px-12 py-5 rounded-full shadow-2xl transform hover:scale-110 transition-all duration-300">
-            🌟 เช็คชื่อเข้างาน
-        </button>
-        
-        <!-- Info Text -->
-        <p class="mt-8 text-gray-400 text-sm text-center max-w-md">
-            สแกน QR Code เพื่อเข้าสู่จักรวาลแห่งดวงดาว<br>
-            ค้นพบตัวตนของคุณผ่านแบบทดสอบบุคลิกภาพดวงดาว
+    <!-- Header -->
+    <div class="mb-8">
+        <h1 class="text-5xl md:text-7xl font-bold mb-4 tracking-tight leading-tight">
+            ยินดีต้อนรับสู่ <br>
+            <span class="text-glow-purple">จักรวาล</span> แห่ง <span class="text-gold">ดวงดาว</span>
+        </h1>
+        <p class="text-lg md:text-xl text-gray-300 font-light mt-4 max-w-2xl mx-auto">
+            ค้นพบตัวตนที่ซ่อนอยู่ผ่านกลุ่มดาวของคุณ<br>
+            ร่วมเป็นส่วนหนึ่งในการสร้างสรรค์โลกใบใหม่
         </p>
     </div>
-    
-    <!-- Check-in Modal -->
-    <div id="checkInModal" class="fixed inset-0 modal-overlay z-50 hidden items-center justify-center p-4">
-        <div class="glass-card rounded-3xl p-8 max-w-2xl w-full max-h-[90vh] overflow-y-auto relative animate-float">
+
+    <!-- Counter Card -->
+    <div class="counter-display rounded-2xl p-6 mb-12 inline-block transform hover:scale-105 transition-transform duration-300">
+        <p class="text-gray-400 text-sm uppercase tracking-widest mb-2">มีดวงดาวเข้าร่วมจักรวาลแล้ว</p>
+        <div class="flex justify-center items-baseline space-x-2">
+            <span id="counter-number" class="counter-number text-5xl md:text-7xl font-bold">987</span>
+            <span class="text-xl text-gray-400">ดวง</span>
+        </div>
+        <div class="mt-3 flex justify-center items-center space-x-2">
+            <div class="w-2 h-2 bg-green-400 rounded-full animate-pulse shadow-[0_0_10px_#4ade80]"></div>
+            <span class="text-xs text-green-400 font-medium">Real-time Activity</span>
+        </div>
+    </div>
+
+    <!-- CTA Button -->
+    <button id="checkinBtn" class="btn-primary text-xl md:text-2xl font-semibold py-4 px-12 rounded-full shadow-[0_0_30px_rgba(124,77,255,0.4)] border border-purple-400/30">
+        เช็คชื่อเข้างาน
+    </button>
+
+    <!-- Modal Form -->
+    <div id="modal" class="fixed inset-0 modal-overlay flex items-center justify-center p-4 hidden z-[100] opacity-0 transition-opacity duration-300">
+        <div class="modal-card rounded-2xl p-8 w-full max-w-md relative transform scale-95 transition-transform duration-300" id="modalContent">
             
             <!-- Close Button -->
-            <button onclick="closeCheckInModal()" class="absolute top-4 right-4 text-gray-400 hover:text-white transition-colors">
-                <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+            <button id="closeModal" class="absolute top-4 right-4 text-gray-400 hover:text-white hover:rotate-90 transition-all">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
                 </svg>
             </button>
-            
-            <!-- Modal Header -->
-            <div class="text-center mb-8">
-                <h2 class="text-3xl md:text-4xl font-orbitron font-bold text-white glow-text mb-2">
-                    เช็คอินเข้าสู่จักรวาล
-                </h2>
-                <p class="text-purple-200">เลือกประเภทของคุณเพื่อเริ่มต้นเดินทาง</p>
+
+            <div class="text-center mb-6">
+                <h2 class="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-400">ลงทะเบียนเข้าสู่ระบบ</h2>
+                <p class="text-sm text-gray-400 mt-2">กรุณาเลือกประเภทและกรอกข้อมูลให้ครบถ้วน</p>
             </div>
-            
-            <!-- Type Selection -->
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-                <button onclick="selectType('student')" id="btnStudent" class="type-btn glass-card p-6 rounded-2xl text-center hover:bg-purple-glow/30 transition-all duration-300 border-2 border-transparent hover:border-purple-glow">
-                    <div class="text-4xl mb-3">🎓</div>
-                    <h3 class="text-lg font-bold text-white">นิสิต</h3>
-                    <p class="text-sm text-gray-400 mt-2">กรอกรหัสนิสิตและข้อมูลคณะ</p>
-                </button>
-                
-                <button onclick="selectType('staff')" id="btnStaff" class="type-btn glass-card p-6 rounded-2xl text-center hover:bg-pink-glow/30 transition-all duration-300 border-2 border-transparent hover:border-pink-glow">
-                    <div class="text-4xl mb-3">👔</div>
-                    <h3 class="text-lg font-bold text-white">บุคลากร</h3>
-                    <p class="text-sm text-gray-400 mt-2">กรอกข้อมูลหน่วยงานและตำแหน่ง</p>
-                </button>
-                
-                <button onclick="selectType('external')" id="btnExternal" class="type-btn glass-card p-6 rounded-2xl text-center hover:bg-star-gold/30 transition-all duration-300 border-2 border-transparent hover:border-star-gold">
-                    <div class="text-4xl mb-3">🌍</div>
-                    <h3 class="text-lg font-bold text-white">บุคคลภายนอก</h3>
-                    <p class="text-sm text-gray-400 mt-2">กรอกชื่อและสังกัดองค์กร</p>
-                </button>
-            </div>
-            
-            <!-- Dynamic Form -->
-            <form id="checkInForm" class="hidden">
-                <input type="hidden" id="participantType" name="participant_type">
-                
-                <!-- Student Form -->
-                <div id="studentForm" class="form-section hidden space-y-4">
-                    <div>
-                        <label class="block text-purple-200 mb-2">รหัสนิสิต *</label>
-                        <input type="text" id="studentId" name="student_id" required 
-                               class="w-full px-4 py-3 glass-card rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-purple-glow transition-colors"
-                               placeholder="กรอกรหัสนิสิต">
-                    </div>
-                    <div>
-                        <label class="block text-purple-200 mb-2">ชื่อ-นามสกุล *</label>
-                        <input type="text" id="studentName" name="student_name" required 
-                               class="w-full px-4 py-3 glass-card rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-purple-glow transition-colors"
-                               placeholder="กรอกชื่อ-นามสกุล">
-                    </div>
-                    <div class="grid grid-cols-2 gap-4">
-                        <div>
-                            <label class="block text-purple-200 mb-2">คณะ *</label>
-                            <input type="text" id="faculty" name="faculty" required 
-                                   class="w-full px-4 py-3 glass-card rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-purple-glow transition-colors"
-                                   placeholder="คณะ">
-                        </div>
-                        <div>
-                            <label class="block text-purple-200 mb-2">ชั้นปี *</label>
-                            <select id="yearLevel" name="year_level" required 
-                                    class="w-full px-4 py-3 glass-card rounded-xl text-white focus:outline-none focus:border-purple-glow transition-colors">
-                                <option value="">เลือกชั้นปี</option>
-                                <option value="1">ปี 1</option>
-                                <option value="2">ปี 2</option>
-                                <option value="3">ปี 3</option>
-                                <option value="4">ปี 4</option>
-                                <option value="5">ปี 5</option>
-                            </select>
+
+            <form id="checkinForm">
+                <div class="mb-6">
+                    <label class="block text-left mb-2 text-sm font-medium text-purple-300">ประเภทของคุณ</label>
+                    <div class="relative">
+                        <select id="typeSelect" class="form-input w-full p-3 rounded-lg appearance-none cursor-pointer">
+                            <option value="student">นิสิต / นักศึกษา</option>
+                            <option value="staff">บุคลากร</option>
+                            <option value="external">บุคคลภายนอก</option>
+                        </select>
+                        <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-purple-400">
+                            <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/></svg>
                         </div>
                     </div>
-                    <div>
-                        <label class="block text-purple-200 mb-2">สาขาวิชา</label>
-                        <input type="text" id="department" name="department" 
-                               class="w-full px-4 py-3 glass-card rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-purple-glow transition-colors"
-                               placeholder="สาขาวิชา">
-                    </div>
                 </div>
-                
-                <!-- Staff Form -->
-                <div id="staffForm" class="form-section hidden space-y-4">
-                    <div>
-                        <label class="block text-pink-200 mb-2">รหัสบุคลากร *</label>
-                        <input type="text" id="staffId" name="staff_id" required 
-                               class="w-full px-4 py-3 glass-card rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-pink-glow transition-colors"
-                               placeholder="กรอกรหัสบุคลากร">
-                    </div>
-                    <div>
-                        <label class="block text-pink-200 mb-2">ชื่อ-นามสกุล *</label>
-                        <input type="text" id="staffName" name="staff_name" required 
-                               class="w-full px-4 py-3 glass-card rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-pink-glow transition-colors"
-                               placeholder="กรอกชื่อ-นามสกุล">
-                    </div>
-                    <div>
-                        <label class="block text-pink-200 mb-2">หน่วยงาน/กอง *</label>
-                        <input type="text" id="division" name="division" required 
-                               class="w-full px-4 py-3 glass-card rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-pink-glow transition-colors"
-                               placeholder="หน่วยงาน/กอง">
-                    </div>
-                    <div>
-                        <label class="block text-pink-200 mb-2">ตำแหน่ง</label>
-                        <input type="text" id="position" name="position" 
-                               class="w-full px-4 py-3 glass-card rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-pink-glow transition-colors"
-                               placeholder="ตำแหน่ง">
-                    </div>
+
+                <div id="formFields" class="space-y-4">
+                    <!-- Fields will be dynamically inserted here -->
                 </div>
-                
-                <!-- External Form -->
-                <div id="externalForm" class="form-section hidden space-y-4">
-                    <div>
-                        <label class="block text-yellow-200 mb-2">ชื่อ-นามสกุล *</label>
-                        <input type="text" id="externalName" name="external_name" required 
-                               class="w-full px-4 py-3 glass-card rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-star-gold transition-colors"
-                               placeholder="กรอกชื่อ-นามสกุล">
-                    </div>
-                    <div>
-                        <label class="block text-yellow-200 mb-2">สังกัด/องค์กร</label>
-                        <input type="text" id="externalOrganization" name="external_organization" 
-                               class="w-full px-4 py-3 glass-card rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-star-gold transition-colors"
-                               placeholder="สังกัด/องค์กร">
-                    </div>
-                    <div>
-                        <label class="block text-yellow-200 mb-2">เบอร์โทรศัพท์</label>
-                        <input type="tel" id="externalPhone" name="external_phone" 
-                               class="w-full px-4 py-3 glass-card rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-star-gold transition-colors"
-                               placeholder="08X-XXX-XXXX">
-                    </div>
-                </div>
-                
-                <!-- Submit Button -->
-                <div class="mt-8">
-                    <button type="submit" class="w-full btn-glow bg-gradient-to-r from-purple-glow to-pink-glow text-white font-orbitron font-bold text-xl px-8 py-4 rounded-xl shadow-2xl">
-                        🚀 บันทึกและเริ่มแบบทดสอบ
-                    </button>
-                </div>
+
+                <button type="submit" class="btn-primary w-full py-3.5 rounded-lg mt-8 font-bold tracking-wide shadow-lg">
+                    บันทึกและเริ่มสำรวจ
+                </button>
             </form>
         </div>
     </div>
+
+</div>
+
+<script>
+    // --- 1. Background Animation Logic ---
+    const bgContainer = document.getElementById('space-bg');
+    const colors = ['#ffffff', '#7C4DFF', '#E040FB', '#FFD700'];
     
-    <!-- JavaScript -->
-    <script>
-        // Generate Animated Stars
-        function createStars() {
-            const starryBg = document.getElementById('starryBg');
-            const starCount = 200;
-            
-            for (let i = 0; i < starCount; i++) {
-                const star = document.createElement('div');
-                star.className = 'star';
-                star.style.left = Math.random() * 100 + '%';
-                star.style.top = Math.random() * 100 + '%';
-                star.style.width = Math.random() * 3 + 1 + 'px';
-                star.style.height = star.style.width;
-                star.style.animationDelay = Math.random() * 3 + 's';
-                star.style.animationDuration = (Math.random() * 2 + 2) + 's';
-                starryBg.appendChild(star);
-            }
-            
-            // Add Nebulae
-            for (let i = 0; i < 3; i++) {
-                const nebula = document.createElement('div');
-                nebula.className = 'nebula';
-                nebula.style.left = Math.random() * 100 + '%';
-                nebula.style.top = Math.random() * 100 + '%';
-                nebula.style.width = (Math.random() * 300 + 200) + 'px';
-                nebula.style.height = nebula.style.width;
-                nebula.style.background = `linear-gradient(135deg, ${i === 0 ? '#7C4DFF' : i === 1 ? '#E040FB' : '#FFD700'}, transparent)`;
-                nebula.style.animationDelay = Math.random() * 5 + 's';
-                starryBg.appendChild(nebula);
-            }
-            
-            // Add Shooting Stars
-            for (let i = 0; i < 2; i++) {
-                const shootingStar = document.createElement('div');
-                shootingStar.className = 'shooting-star';
-                shootingStar.style.left = Math.random() * 100 + '%';
-                shootingStar.style.top = Math.random() * 30 + '%';
-                shootingStar.style.animationDelay = Math.random() * 5 + 's';
-                starryBg.appendChild(shootingStar);
-            }
+    // Create Stars
+    for (let i = 0; i < 200; i++) {
+        const star = document.createElement('div');
+        star.classList.add('star');
+        star.style.left = `${Math.random() * 100}%`;
+        star.style.top = `${Math.random() * 100}%`;
+        const size = Math.random() * 3;
+        star.style.width = `${size}px`;
+        star.style.height = `${size}px`;
+        star.style.setProperty('--duration', `${Math.random() * 3 + 2}s`);
+        star.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+        bgContainer.appendChild(star);
+    }
+
+    // Create Nebulas
+    for (let i = 0; i < 4; i++) {
+        const neb = document.createElement('div');
+        neb.classList.add('nebula');
+        const size = Math.random() * 400 + 200;
+        neb.style.width = `${size}px`;
+        neb.style.height = `${size}px`;
+        neb.style.left = `${Math.random() * 100}%`;
+        neb.style.top = `${Math.random() * 100}%`;
+        neb.style.backgroundColor = colors[Math.floor(Math.random() * 2)]; // Use white or purple mostly
+        bgContainer.appendChild(neb);
+    }
+
+    // Shooting Stars Interval
+    setInterval(() => {
+        const shooter = document.createElement('div');
+        shooter.classList.add('shooting-star');
+        shooter.style.top = `${Math.random() * 80}%`; // Keep mostly in upper area
+        shooter.style.left = `${Math.random() * 100}%`;
+        bgContainer.appendChild(shooter);
+        setTimeout(() => shooter.remove(), 4000);
+    }, 6000);
+
+    // --- 2. Modal & Form Logic ---
+    const modal = document.getElementById('modal');
+    const modalContent = document.getElementById('modalContent');
+    const checkinBtn = document.getElementById('checkinBtn');
+    const closeModal = document.getElementById('closeModal');
+    const typeSelect = document.getElementById('typeSelect');
+    const formFields = document.getElementById('formFields');
+
+    function openModal() {
+        modal.classList.remove('hidden');
+        // Small delay to allow display:block to apply before opacity transition
+        setTimeout(() => {
+            modal.classList.remove('opacity-0');
+            modalContent.classList.remove('scale-95');
+            modalContent.classList.add('scale-100');
+        }, 10);
+    }
+
+    function closeModalFunc() {
+        modal.classList.add('opacity-0');
+        modalContent.classList.remove('scale-100');
+        modalContent.classList.add('scale-95');
+        setTimeout(() => {
+            modal.classList.add('hidden');
+        }, 300);
+    }
+
+    function updateFormFields() {
+        const type = typeSelect.value;
+        let fieldsHTML = '';
+        const inputClass = "form-input w-full p-3 rounded-lg placeholder-gray-500 text-sm";
+
+        if (type === 'student') {
+            fieldsHTML = `
+                <div class="animate-fade-in"><input type="text" placeholder="รหัสนิสิต (Student ID)" class="${inputClass}" required></div>
+                <div class="animate-fade-in"><input type="text" placeholder="ชื่อ-นามสกุล" class="${inputClass}" required></div>
+                <div class="animate-fade-in"><input type="email" placeholder="อีเมลสถาบัน" class="${inputClass}"></div>
+                <div class="animate-fade-in"><input type="text" placeholder="คณะ" class="${inputClass}"></div>
+            `;
+        } else if (type === 'staff') {
+            fieldsHTML = `
+                <div class="animate-fade-in"><input type="text" placeholder="ชื่อ-นามสกุล" class="${inputClass}" required></div>
+                <div class="animate-fade-in"><input type="email" placeholder="อีเมล" class="${inputClass}"></div>
+                <div class="animate-fade-in"><input type="text" placeholder="แผนก / ฝ่าย" class="${inputClass}"></div>
+                <div class="animate-fade-in"><input type="tel" placeholder="เบอร์โทรติดต่อ" class="${inputClass}"></div>
+            `;
+        } else { // external
+            fieldsHTML = `
+                <div class="animate-fade-in"><input type="text" placeholder="ชื่อ-นามสกุล" class="${inputClass}" required></div>
+                <div class="animate-fade-in"><input type="email" placeholder="อีเมล" class="${inputClass}"></div>
+                <div class="animate-fade-in"><input type="text" placeholder="หน่วยงาน / องค์กร" class="${inputClass}"></div>
+                <div class="animate-fade-in"><input type="tel" placeholder="เบอร์โทรติดต่อ" class="${inputClass}"></div>
+            `;
         }
+        formFields.innerHTML = fieldsHTML;
+    }
+
+    typeSelect.addEventListener('change', updateFormFields);
+    updateFormFields(); // Initialize
+
+    checkinBtn.addEventListener('click', openModal);
+    closeModal.addEventListener('click', closeModalFunc);
+    
+    // Close on click outside
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) closeModalFunc();
+    });
+
+    // --- 3. Form Submission & Sparkle Effect ---
+    document.getElementById('checkinForm').addEventListener('submit', function(e) {
+        e.preventDefault();
         
-        // Modal Functions
-        function openCheckInModal() {
-            document.getElementById('checkInModal').classList.remove('hidden');
-            document.getElementById('checkInModal').classList.add('flex');
+        // Hide modal
+        closeModalFunc();
+
+        // Trigger sparkle effect from center of screen
+        triggerSparkleEffect(window.innerWidth / 2, window.innerHeight / 2);
+
+        // Simulate processing and redirect
+        setTimeout(() => {
+            // In real app: window.location.href = 'quiz.html';
+            alert("บันทึกข้อมูลเรียบร้อย! เตรียมตัวพบกับดวงดาวของคุณ...");
+            console.log("Redirecting to quiz.html...");
+        }, 1500);
+    });
+
+    function triggerSparkleEffect(x, y) {
+        const particleCount = 120;
+        for (let i = 0; i < particleCount; i++) {
+            const sparkle = document.createElement('div');
+            sparkle.classList.add('sparkle');
+            
+            // Start from center
+            sparkle.style.left = `${x}px`;
+            sparkle.style.top = `${y}px`;
+            
+            // Random direction
+            const angle = Math.random() * Math.PI * 2;
+            const velocity = Math.random() * 200 + 100; // Distance
+            const tx = Math.cos(angle) * velocity;
+            const ty = Math.sin(angle) * velocity;
+            
+            sparkle.style.setProperty('--tx', `${tx}px`);
+            sparkle.style.setProperty('--ty', `${ty}px`);
+            
+            // Random colors
+            sparkle.style.backgroundColor = ['#FFD700', '#7C4DFF', '#E040FB', '#FFFFFF'][Math.floor(Math.random() * 4)];
+            
+            document.body.appendChild(sparkle);
+
+            setTimeout(() => {
+                sparkle.remove();
+            }, 1000);
         }
+    }
+
+    // --- 4. Live Counter Simulation ---
+    const counterEl = document.getElementById('counter-number');
+    let currentCount = 987;
+    
+    function incrementCounter() {
+        // Randomly increment every 2-5 seconds
+        const nextIncrement = Math.random() * 3000 + 2000;
         
-        function closeCheckInModal() {
-            document.getElementById('checkInModal').classList.add('hidden');
-            document.getElementById('checkInModal').classList.remove('flex');
-            resetForm();
-        }
-        
-        // Type Selection
-        let selectedType = null;
-        
-        function selectType(type) {
-            selectedType = type;
-            document.getElementById('participantType').value = type;
+        setTimeout(() => {
+            const increase = Math.floor(Math.random() * 3) + 1; // Increase by 1-3
+            currentCount += increase;
+            counterEl.textContent = currentCount.toLocaleString();
             
-            // Reset all buttons
-            document.querySelectorAll('.type-btn').forEach(btn => {
-                btn.classList.remove('border-purple-glow', 'border-pink-glow', 'border-star-gold', 'bg-purple-glow/30', 'bg-pink-glow/30', 'bg-star-gold/30');
-                btn.classList.add('border-transparent');
-            });
+            // Add a little pulse effect
+            counterEl.classList.add('scale-110');
+            setTimeout(() => counterEl.classList.remove('scale-110'), 200);
             
-            // Hide all forms
-            document.querySelectorAll('.form-section').forEach(form => {
-                form.classList.add('hidden');
-            });
-            
-            // Activate selected
-            const btnId = 'btn' + type.charAt(0).toUpperCase() + type.slice(1);
-            document.getElementById(btnId).classList.remove('border-transparent');
-            
-            if (type === 'student') {
-                document.getElementById('btnStudent').classList.add('border-purple-glow', 'bg-purple-glow/30');
-                document.getElementById('studentForm').classList.remove('hidden');
-            } else if (type === 'staff') {
-                document.getElementById('btnStaff').classList.add('border-pink-glow', 'bg-pink-glow/30');
-                document.getElementById('staffForm').classList.remove('hidden');
-            } else {
-                document.getElementById('btnExternal').classList.add('border-star-gold', 'bg-star-gold/30');
-                document.getElementById('externalForm').classList.remove('hidden');
-            }
-            
-            document.getElementById('checkInForm').classList.remove('hidden');
-        }
-        
-        // Reset Form
-        function resetForm() {
-            document.getElementById('checkInForm').reset();
-            document.getElementById('checkInForm').classList.add('hidden');
-            document.querySelectorAll('.form-section').forEach(form => {
-                form.classList.add('hidden');
-            });
-            document.querySelectorAll('.type-btn').forEach(btn => {
-                btn.classList.remove('border-purple-glow', 'border-pink-glow', 'border-star-gold', 'bg-purple-glow/30', 'bg-pink-glow/30', 'bg-star-gold/30');
-                btn.classList.add('border-transparent');
-            });
-            selectedType = null;
-        }
-        
-        // Form Submission
-        document.getElementById('checkInForm').addEventListener('submit', async function(e) {
-            e.preventDefault();
-            
-            const formData = new FormData(this);
-            const data = Object.fromEntries(formData.entries());
-            
-            try {
-                // TODO: Replace with actual API endpoint
-                const response = await fetch('/api/checkin', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(data)
-                });
-                
-                if (response.ok) {
-                    // Trigger Star Dust Effect
-                    createStarDustEffect();
-                    
-                    // Redirect to Quiz after delay
-                    setTimeout(() => {
-                        window.location.href = 'quiz.html';
-                    }, 2000);
-                } else {
-                    alert('เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้ง');
-                }
-            } catch (error) {
-                console.error('Error:', error);
-                // For demo purposes, redirect anyway
-                createStarDustEffect();
-                setTimeout(() => {
-                    window.location.href = 'quiz.html';
-                }, 2000);
-            }
-        });
-        
-        // Star Dust Effect
-        function createStarDustEffect() {
-            const colors = ['#FFD700', '#7C4DFF', '#E040FB', '#FFFFFF'];
-            
-            for (let i = 0; i < 100; i++) {
-                setTimeout(() => {
-                    const particle = document.createElement('div');
-                    particle.style.position = 'fixed';
-                    particle.style.left = '50%';
-                    particle.style.top = '50%';
-                    particle.style.width = Math.random() * 8 + 4 + 'px';
-                    particle.style.height = particle.style.width;
-                    particle.style.background = colors[Math.floor(Math.random() * colors.length)];
-                    particle.style.borderRadius = '50%';
-                    particle.style.pointerEvents = 'none';
-                    particle.style.zIndex = '1000';
-                    particle.style.boxShadow = `0 0 ${Math.random() * 20 + 10}px ${particle.style.background}`;
-                    
-                    document.body.appendChild(particle);
-                    
-                    const angle = Math.random() * Math.PI * 2;
-                    const velocity = Math.random() * 300 + 200;
-                    const tx = Math.cos(angle) * velocity;
-                    const ty = Math.sin(angle) * velocity;
-                    
-                    particle.animate([
-                        { transform: 'translate(0, 0) scale(1)', opacity: 1 },
-                        { transform: `translate(${tx}px, ${ty}px) scale(0)`, opacity: 0 }
-                    ], {
-                        duration: 1500,
-                        easing: 'cubic-bezier(0, .9, .57, 1)'
-                    }).onfinish = () => particle.remove();
-                }, i * 20);
-            }
-        }
-        
-        // Fetch Real-time Counter
-        async function fetchParticipantCount() {
-            try {
-                // TODO: Replace with actual API endpoint
-                const response = await fetch('/api/statistics/participants');
-                if (response.ok) {
-                    const data = await response.json();
-                    animateCounter(data.count || 0);
-                }
-            } catch (error) {
-                console.error('Error fetching count:', error);
-                // Demo count
-                animateCounter(1247);
-            }
-        }
-        
-        // Animate Counter
-        function animateCounter(target) {
-            const counter = document.getElementById('participantCount');
-            const duration = 2000;
-            const start = 0;
-            const increment = target / (duration / 16);
-            let current = start;
-            
-            const timer = setInterval(() => {
-                current += increment;
-                if (current >= target) {
-                    counter.textContent = target.toLocaleString();
-                    clearInterval(timer);
-                } else {
-                    counter.textContent = Math.floor(current).toLocaleString();
-                }
-            }, 16);
-        }
-        
-        // Initialize
-        document.addEventListener('DOMContentLoaded', () => {
-            createStars();
-            fetchParticipantCount();
-            
-            // Refresh counter every 30 seconds
-            setInterval(fetchParticipantCount, 30000);
-        });
-        
-        // Close modal on outside click
-        document.getElementById('checkInModal').addEventListener('click', function(e) {
-            if (e.target === this) {
-                closeCheckInModal();
-            }
-        });
-    </script>
+            incrementCounter();
+        }, nextIncrement);
+    }
+    
+    incrementCounter();
+
+</script>
+
 </body>
 </html>
